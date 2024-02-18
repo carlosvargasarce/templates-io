@@ -2,7 +2,17 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First:
+
+1- Install Node: [https://nodejs.org/en]
+
+2- Install Visual Studio Code: [https://code.visualstudio.com/]
+
+3- Clone the repository
+
+4- Run npm install
+
+Then, run the development server:
 
 ```bash
 npm run dev
