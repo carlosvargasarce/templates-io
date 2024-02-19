@@ -1,7 +1,9 @@
 import '@/app/globals.css';
+import Bottombar from '@/components/Bottombar/Bottombar';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import styles from './layout.module.scss';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,10 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Sidebar />
-        <section>
-          <div>{children}</div>
-        </section>
+        <div className={styles.layout}>
+          <Sidebar />
+          <section className={styles.container}>{children}</section>
+          <Bottombar />
+        </div>
       </body>
     </html>
   );

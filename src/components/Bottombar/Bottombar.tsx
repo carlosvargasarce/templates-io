@@ -1,27 +1,16 @@
 'use client';
 
-import Title from '@/components/Title/Title';
 import { sidebarLinks } from '@/constants';
 import Icon from '@icon-park/react/es/all';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import styles from './Sidebar.module.scss';
+import styles from './Bottombar.module.scss';
 
-const Sidebar = () => {
+const Bottombar = () => {
   const pathname = usePathname();
 
   return (
-    <section className={styles.sidebar}>
-      <div className={styles.header}>
-        {/* TODO: ESTA INFORMACION DEBE DE SER DINAMICA */}
-        <Title size="h3" color="whiteColor">
-          Hola, Carlos
-        </Title>
-        <Title size="h5" color="primaryColor">
-          Administrador
-        </Title>
-      </div>
-
+    <section className={styles.bottombar}>
       <div className={styles.links}>
         {sidebarLinks.map((link) => {
           const isActive =
@@ -34,21 +23,14 @@ const Sidebar = () => {
               key={link.label}
               className={isActive ? styles.active : ''}
             >
-              <Icon type={link.icon} />
-              {link.label}
+              <Icon type={link.icon} size="24px" />
+              <span className={styles.label}>{link.label}</span>
             </Link>
           );
         })}
-      </div>
-
-      <div className={styles.signOut}>
-        <button>
-          <Icon type="logout" />
-          Salir
-        </button>
       </div>
     </section>
   );
 };
 
-export default Sidebar;
+export default Bottombar;
