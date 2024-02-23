@@ -1,7 +1,7 @@
 'use client';
 
 import Title from '@/components/Title/Title';
-import { sidebarLinks } from '@/constants';
+import { sidebarLinks } from '@/constants/sidebarLinks';
 import Icon from '@icon-park/react/es/all';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
