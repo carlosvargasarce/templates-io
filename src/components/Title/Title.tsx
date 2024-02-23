@@ -1,6 +1,6 @@
-import { colors } from '@/constants';
+import { colors } from '@/constants/colors';
+import { TitleProps } from '@/types/title';
 import React from 'react';
-import { TitleProps } from './TitleProps';
 
 const Title: React.FC<TitleProps> = ({
   children,

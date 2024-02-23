@@ -9,4 +9,14 @@
   min-height: 100vh;
   flex: 1;
   padding: 2rem 2.5rem;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+
+  > main {
+    @media (max-width: 768px) {
+      width: calc(100vw - 32px);
+    }
+  }
 }
