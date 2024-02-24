@@ -26,11 +26,11 @@ const Sidebar = () => {
         {sidebarLinks.map((link) => {
           const isActive =
             pathname === link.route ||
-            (pathname.includes(link.route) && link.route.length > 1);
+            (pathname.includes(link.singular) && link.singular.length > 1);
 
           return (
             <Link
-              href={link.route}
+              href={`/${link.route}`}
               key={link.label}
               className={isActive ? styles.active : ''}
             >

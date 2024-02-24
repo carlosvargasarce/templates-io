@@ -10,6 +10,7 @@ export const customStyles = {
   header: {
     style: {
       color: colors.whiteColor,
+      minHeight: '66px',
     },
   },
   head: {
@@ -45,6 +46,13 @@ export const customStyles = {
         backgroundColor: colors.whiteColor,
         borderBottomColor: colors.grayColor,
       },
+    },
+  },
+  contextMenu: {
+    style: {
+      backgroundColor: 'transparent',
+      paddingRight: '0',
+      paddingLeft: '0',
     },
   },
   pagination: {
