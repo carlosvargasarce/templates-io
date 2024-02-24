@@ -4,4 +4,5 @@ export const colors = {
   grayColor: '#d6d6d6',
   grayLightColor: '#ededed',
   whiteColor: '#FFFFFF',
+  danger: '#dc3545',
 };

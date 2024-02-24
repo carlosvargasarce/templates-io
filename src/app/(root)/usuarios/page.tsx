@@ -1,10 +1,13 @@
 'use client';
 
+import Button from '@/components/Button/Button';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
 import { UserProps } from '@/types/user';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
+import styles from './page.module.scss';
 import { users } from './users';
 
 //Estructura de las columnas
@@ -28,7 +31,7 @@ const columns: TableColumn<UserProps>[] = [
 ];
 
 export default function Page() {
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState<UserProps[]>([]);
   const [toggleCleared, setToggleCleared] = useState(false);
   const [data, setData] = useState(users);
   const [loader, setLoader] = useState(true);
@@ -41,28 +44,44 @@ export default function Page() {
     setSelectedRows(state.selectedRows);
   }, []);
 
-  // TODO: AÑADIR CONTEXTACTION APENAS SE CREE EL COMPONENTE DE BOTON
-  // TODO: CAMBIAR EL CHECKBOX POR UNO PROPIO (NICE TO HAVE) VER DOCUMENTACIÓN
-  const contextActions = useMemo(() => {
-    return <button key="edit">Editar</button>;
-  }, [data, selectedRows, toggleCleared]);
+  //TODO: CREAR COMPONENTE PARA MODAL
+  const handleDelete = () => {
+    console.log('Remover el usuario: ', selectedRows[0].name);
+  };
 
+  // TODO: CAMBIAR EL CHECKBOX POR UNO PROPIO (NICE TO HAVE) VER DOCUMENTACIÓN
   return (
     <main>
       <Title color="primaryColor">Lista de usuarios</Title>
+      <div className={styles.buttons}>
+        {selectedRows.length > 0 && (
+          <Button label="Eliminar" bgColor="danger" onClick={handleDelete} />
+        )}
+        <Link
+          href={
+            selectedRows.length > 0
+              ? `/editar-usuario/${selectedRows[0].id}`
+              : '/crear-usuario'
+          }
+        >
+          <Button
+            label={selectedRows.length > 0 ? 'Editar' : 'Crear'}
+            bgColor="primaryColor"
+          />
+        </Link>
+      </div>
+
       {/* TODO: CREAR LOADER */}
       {loader ? (
         <div>Loading...</div>
       ) : (
         <DataTable
-          title="Lista de usuarios"
           columns={columns}
           data={data}
           customStyles={customStyles as any}
           selectableRows
           selectableRowsSingle
           selectableRowsHighlight
-          //contextActions={contextActions}
           onSelectedRowsChange={handleRowSelected}
           clearSelectedRows={toggleCleared}
           pagination={true}
@@ -73,12 +92,6 @@ export default function Page() {
             selectAllRowsItem: false,
             selectAllRowsItemText: 'Todos',
           }}
-          contextMessage={{
-            singular: 'usuario',
-            plural: 'items',
-            message: 'seleccionado',
-          }}
-          paginationServer={true}
         />
       )}
     </main>
