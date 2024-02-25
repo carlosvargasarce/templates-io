@@ -1,11 +1,12 @@
 'use client';
 
 import Button from '@/components/Button/Button';
+import Loading from '@/components/Loading/Loading';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
 import { TemplateProps } from '@/types/template';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import styles from './page.module.scss';
 import { templates } from './templates';
@@ -36,7 +37,10 @@ export default function Page() {
   const [loader, setLoader] = useState(true);
 
   useEffect(() => {
-    setLoader(false);
+    // Simular una carga de datos asíncrona prolongada
+    setTimeout(() => {
+      setLoader(false); // Una vez que se complete la carga, establece loader en false
+    }, 1000); // Aumenta el tiempo de espera a 5000 milisegundos (5 segundos)
   }, []);
 
   const handleRowSelected = useCallback((state: any) => {
@@ -71,8 +75,9 @@ export default function Page() {
       </div>
 
       {/* TODO: CREAR LOADER */}
+      <Suspense fallback={<Loading />}>
       {loader ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <DataTable
           columns={columns}
@@ -98,6 +103,7 @@ export default function Page() {
           }}
         />
       )}
+      </Suspense>
     </main>
   );
 }

@@ -4,11 +4,13 @@ import Button from '@/components/Button/Button';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
 import { UserProps } from '@/types/user';
+import Loading from '@icon-park/react/lib/icons/Loading';
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import styles from './page.module.scss';
 import { users } from './users';
+
 
 //Estructura de las columnas
 const columns: TableColumn<UserProps>[] = [
@@ -51,6 +53,7 @@ export default function Page() {
 
   // TODO: CAMBIAR EL CHECKBOX POR UNO PROPIO (NICE TO HAVE) VER DOCUMENTACIÓN
   return (
+    <Suspense fallback = {<p>Loading users...</p>}>
     <main>
       <Title color="primaryColor">Lista de usuarios</Title>
       <div className={styles.buttons}>
@@ -73,7 +76,7 @@ export default function Page() {
 
       {/* TODO: CREAR LOADER */}
       {loader ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
         <DataTable
           columns={columns}
@@ -95,5 +98,6 @@ export default function Page() {
         />
       )}
     </main>
+    </Suspense>
   );
 }
