@@ -7,10 +7,12 @@ const Title: React.FC<TitleProps> = ({
   size = 'h1',
   color = 'grayColor',
   textAlign = 'left',
+  style,
 }) => {
   const titleStyle: React.CSSProperties = {
     color: colors[color] || colors.grayColor,
     textAlign,
+    ...style,
   };
 
   const TitleElement = size || 'h1';

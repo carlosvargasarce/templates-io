@@ -11,8 +11,18 @@
     }
 
     @media (max-width: 768px) {
-      width: 100%;
+      width: calc(50% - 8px);
       min-width: auto !important;
+    }
+  }
+
+  > a {
+    @media (max-width: 768px) {
+      width: calc(50% - 8px);
+
+      button {
+        width: 100%;
+      }
     }
   }
 }
