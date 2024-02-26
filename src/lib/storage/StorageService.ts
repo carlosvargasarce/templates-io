@@ -13,6 +13,7 @@ export class StorageService {
     if (!StorageService.instance) {
       StorageService.instance = new StorageService();
     }
+
     return StorageService.instance;
   }
 

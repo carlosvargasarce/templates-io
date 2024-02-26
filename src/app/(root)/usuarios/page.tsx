@@ -3,12 +3,12 @@
 import Button from '@/components/Button/Button';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
+import { StorageService } from '@/lib/storage/StorageService';
 import { UserProps } from '@/types/user';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import styles from './page.module.scss';
-import { users } from './users';
 
 //Estructura de las columnas
 const columns: TableColumn<UserProps>[] = [
@@ -29,6 +29,10 @@ const columns: TableColumn<UserProps>[] = [
     sortable: true,
   },
 ];
+
+//Usuarios desde localStorage
+const storageService = StorageService.getInstance();
+const users = storageService.getUsers();
 
 export default function Page() {
   const [selectedRows, setSelectedRows] = useState<UserProps[]>([]);
