@@ -1,0 +1,21 @@
+@import '@/app/variables.module.scss';
+
+.layout {
+  display: flex;
+  color: $gray-dark-color;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  flex-direction: column;
+  padding: 80px 0;
+
+  form {
+    padding: 0 16px;
+    max-width: 432px;
+    width: 100%;
+
+    button {
+      width: 100%;
+    }
+  }
+}

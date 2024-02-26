@@ -2,28 +2,42 @@
 
 import Title from '@/components/Title/Title';
 import { sidebarLinks } from '@/constants/sidebarLinks';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
+import { AuthService } from '@/lib/storage/authService';
 import Icon from '@icon-park/react/es/all';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import styles from './Sidebar.module.scss';
 
 const Sidebar = () => {
+  const authService = new AuthService();
   const pathname = usePathname();
+  const router = useRouter();
+  const user = useRequireAuth();
+  const userRole = user?.role || '';
+
+  const handleLogout = () => {
+    authService.logout();
+    router.push('/iniciar');
+  };
+
+  const filteredLinks = sidebarLinks.filter((link) =>
+    link.roles.includes(userRole)
+  );
 
   return (
     <section className={styles.sidebar}>
       <div className={styles.header}>
-        {/* TODO: ESTA INFORMACION DEBE DE SER DINAMICA */}
         <Title size="h3" color="whiteColor">
-          Hola, Carlos
+          Hola, {user?.name}
         </Title>
         <Title size="h5" color="primaryColor">
-          Administrador
+          {user?.role}
         </Title>
       </div>
 
       <div className={styles.links}>
-        {sidebarLinks.map((link) => {
+        {filteredLinks.map((link) => {
           const isActive =
             pathname === link.route ||
             (pathname.includes(link.singular) && link.singular.length > 1);
@@ -42,7 +56,7 @@ const Sidebar = () => {
       </div>
 
       <div className={styles.signOut}>
-        <button>
+        <button onClick={handleLogout}>
           <Icon type="logout" />
           Salir
         </button>
