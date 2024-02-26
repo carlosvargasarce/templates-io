@@ -4,7 +4,6 @@ import Sidebar from '@/components/Sidebar/Sidebar';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import styles from './layout.module.scss';
-
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
