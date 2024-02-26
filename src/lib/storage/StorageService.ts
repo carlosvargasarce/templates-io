@@ -1,3 +1,5 @@
+'use-client';
+
 export class StorageService {
   private static instance: StorageService;
 

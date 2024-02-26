@@ -1,3 +1,5 @@
+'use-client';
+
 import { StorageService } from './StorageService';
 
 export class AuthService {
