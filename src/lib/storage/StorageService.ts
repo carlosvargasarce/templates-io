@@ -1,5 +1,3 @@
-'use-client';
-
 export class StorageService {
   private static instance: StorageService;
 
@@ -11,6 +9,11 @@ export class StorageService {
     console.log('Instancia local creada');
   }
 
+  //El siguiente método es usado porque localStorage no puede correr del lado del servidor
+  private isClientSide() {
+    return typeof window !== 'undefined';
+  }
+
   public static getInstance(): StorageService {
     if (!StorageService.instance) {
       StorageService.instance = new StorageService();
@@ -20,12 +23,16 @@ export class StorageService {
   }
 
   public saveUser(user: any) {
+    if (!this.isClientSide()) return;
+
     const users = this.getUsers();
     users.push(user);
     localStorage.setItem('users', JSON.stringify(users));
   }
 
   public getUsers(): any[] {
+    if (!this.isClientSide()) return [];
+
     const users = localStorage.getItem('users');
     return users ? JSON.parse(users) : [];
   }
@@ -36,6 +43,8 @@ export class StorageService {
   }
 
   public getActiveUser() {
+    if (!this.isClientSide()) return null;
+
     const activeUser = localStorage.getItem('activeUser');
     if (activeUser) {
       return JSON.parse(activeUser);

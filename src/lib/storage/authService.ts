@@ -1,5 +1,3 @@
-'use-client';
-
 import { StorageService } from './StorageService';
 
 export class AuthService {
@@ -9,6 +7,11 @@ export class AuthService {
     this.storageService = StorageService.getInstance();
   }
 
+  //El siguiente método es usado porque localStorage no puede correr del lado del servidor
+  private isClientSide() {
+    return typeof window !== 'undefined';
+  }
+
   public login(email: string, password: string): boolean {
     const users = this.storageService.getUsers();
     // TODO:IMPLEMENTAR MAYOR SEGURIDAD EN CONTRASEÑA
@@ -16,7 +19,7 @@ export class AuthService {
       (user) => user.email === email && user.password === password
     );
 
-    if (user) {
+    if (user && this.isClientSide()) {
       localStorage.setItem('activeUser', JSON.stringify(user));
       return true;
     }
