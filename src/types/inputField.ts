@@ -1,6 +1,6 @@
-type inputType = 'text' | 'email' | 'password';
+export type inputType = 'text' | 'email' | 'password';
 
-export type InputFieldProps = {
+export interface InputFieldProps {
   id: string;
   label: string;
   value: string;
@@ -9,4 +9,4 @@ export type InputFieldProps = {
   type?: inputType;
   required?: boolean;
   style?: React.CSSProperties;
-};
+}
