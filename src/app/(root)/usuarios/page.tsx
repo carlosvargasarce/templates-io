@@ -3,9 +3,11 @@
 import Button from '@/components/Button/Button';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
+import { useRequireAuth } from '@/hooks/useRequireAuth';
 import UserManager from '@/lib/manager/UserManager';
 import { UserProps } from '@/types/user';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import styles from './page.module.scss';
@@ -34,12 +36,27 @@ const userManager = new UserManager();
 const users = userManager.getAllUsers();
 
 export default function Page() {
+  const router = useRouter();
+
   const [selectedRows, setSelectedRows] = useState<UserProps[]>([]);
   const [toggleCleared, setToggleCleared] = useState(false);
-  const [data, setData] = useState(users);
+  const [data, setData] = useState<UserProps[]>([]);
   const [loader, setLoader] = useState(true);
+  const [userManager, setUserManager] = useState<UserManager | null>(null);
+  const [users, setUsers] = useState<UserProps[]>([]);
+
+  const user = useRequireAuth();
+  const userRole = user?.role || '';
+  
+
+  
 
   useEffect(() => {
+    const userManagerInstance = new UserManager();
+    const usersData = userManagerInstance.getAllUsers();
+    setUserManager(userManagerInstance);
+    setUsers(usersData);
+    setData(usersData);
     setLoader(false);
   }, []);
 
@@ -60,6 +77,8 @@ export default function Page() {
         {selectedRows.length > 0 && (
           <Button label="Eliminar" bgColor="danger" onClick={handleDelete} />
         )}
+
+        {userRole === 'Administrador' ? (
         <Link
           href={
             selectedRows.length > 0
@@ -72,6 +91,14 @@ export default function Page() {
             bgColor="primaryColor"
           />
         </Link>
+      ) : (
+        // Si el usuario no es administrador, redirige al home
+        <Button
+        label="Ir al Home"
+        bgColor="primaryColor"
+        onClick={() => router.push('/')}
+        />
+      )}
       </div>
 
       {/* TODO: CREAR LOADER */}
