@@ -3,45 +3,23 @@
 import Button from '@/components/Button/Button';
 import InputField from '@/components/InputField/InputField';
 import Title from '@/components/Title/Title';
+import useToast from '@/hooks/useToast';
 import { AuthService } from '@/lib/storage/authService';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { FormEvent, useState } from 'react';
-import { Bounce, ToastContainer, ToastPosition, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import logo from '../../../../public/assets/logo.png';
 
 export default function Page() {
   const authService = new AuthService();
   const router = useRouter();
+  const { notifySuccess, notifyError } = useToast();
 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
-  const notifyErrorOptions = {
-    position: 'top-right' as ToastPosition,
-    autoClose: 3000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: 'light',
-    transition: Bounce,
-  };
-
-  const notifyError = (message: string) => {
-    toast.error(message, notifyErrorOptions);
-  };
-
-  const notifySuccess = (message: string) => {
-    toast.success(message, {
-      className: 'toast-success',
-    });
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -105,7 +83,6 @@ export default function Page() {
             bgColor="whiteColor"
           />
         </Link>
-        <ToastContainer />{' '}
         {/* Include the ToastContainer at the end of your component */}
       </form>
     </>

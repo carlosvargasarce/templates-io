@@ -1,4 +1,5 @@
 import '@/app/globals.css';
+import ToastProvider from '@/components/ToastProvider/ToastProvider';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import styles from './layout.module.scss';
@@ -25,7 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main className={styles.layout}>{children}</main>
+        <ToastProvider>
+          <main className={styles.layout}>{children}</main>
+        </ToastProvider>
       </body>
     </html>
   );
