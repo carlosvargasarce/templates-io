@@ -4,8 +4,9 @@ import { StorageService } from '../storage/StorageService';
 import { Admin } from '../users/Admin';
 import { Client } from '../users/Client';
 import { Moderator } from '../users/Moderator';
+import { IUserFactory } from './IUserFactory';
 
-class UserFactory {
+class UserFactory implements IUserFactory {
   createUser(userData: any, answers: string[]) {
     const id = uuidv4();
     let user;
@@ -32,6 +33,7 @@ class UserFactory {
     return user;
   }
 
+  // Este metodo no es comun para posibles variantes de la fabrica
   determineRoleBasedOnAnswers(answers: string[]): UserProps['role'] {
     if (answers[0] == '1') {
       return 'Cliente';
