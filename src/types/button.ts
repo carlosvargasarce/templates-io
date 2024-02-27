@@ -1,7 +1,7 @@
-type bgColor = 'primaryColor' | 'grayColor' | 'danger' | 'whiteColor';
-type buttonType = 'button' | 'submit' | 'reset';
+export type bgColor = 'primaryColor' | 'grayColor' | 'danger' | 'whiteColor';
+export type buttonType = 'button' | 'submit' | 'reset';
 
-export type ButtonProps = {
+export interface ButtonProps {
   label: string;
   bgColor?: bgColor;
   style?: React.CSSProperties;
@@ -9,4 +9,4 @@ export type ButtonProps = {
   onClick?: () => void;
   type?: buttonType;
   disabled?: boolean;
-};
+}
