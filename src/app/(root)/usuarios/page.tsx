@@ -3,7 +3,7 @@
 import Button from '@/components/Button/Button';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
-import { StorageService } from '@/lib/storage/StorageService';
+import UserManager from '@/lib/manager/UserManager';
 import { UserProps } from '@/types/user';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -30,9 +30,8 @@ const columns: TableColumn<UserProps>[] = [
   },
 ];
 
-//Usuarios desde localStorage
-const storageService = StorageService.getInstance();
-const users = storageService.getUsers();
+const userManager = new UserManager();
+const users = userManager.getAllUsers();
 
 export default function Page() {
   const [selectedRows, setSelectedRows] = useState<UserProps[]>([]);

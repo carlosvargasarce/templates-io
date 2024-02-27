@@ -33,10 +33,15 @@ export default function Page() {
         console.log('Inicio de sesión exitoso');
         router.push('/');
       } else {
-        console.error('Credenciales inválidas');
+        // TODO: IMPLEMENTAR SNACKBAR PARA ERRORES
+        console.error(
+          'Error: Las credenciales proporcionadas son incorrectas. Por favor, verifica tu email y contraseña e inténtalo de nuevo.'
+        );
       }
     } else {
-      console.error('Formulario inválido');
+      console.error(
+        'Error: Por favor, asegúrate de llenar todos los campos requeridos correctamente.'
+      );
     }
   };
 
