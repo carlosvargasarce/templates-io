@@ -1,6 +1,7 @@
 import '@/app/globals.css';
 import Bottombar from '@/components/Bottombar/Bottombar';
 import Sidebar from '@/components/Sidebar/Sidebar';
+import ToastProvider from '@/components/ToastProvider/ToastProvider';
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import styles from './layout.module.scss';
@@ -27,11 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className={styles.layout}>
-          <Sidebar />
-          <section className={styles.container}>{children}</section>
-          <Bottombar />
-        </div>
+        <ToastProvider>
+          <div className={styles.layout}>
+            <Sidebar />
+            <section className={styles.container}>{children}</section>
+            <Bottombar />
+          </div>
+        </ToastProvider>
       </body>
     </html>
   );

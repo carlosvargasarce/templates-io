@@ -3,16 +3,18 @@
 import Button from '@/components/Button/Button';
 import InputField from '@/components/InputField/InputField';
 import Title from '@/components/Title/Title';
+import useToast from '@/hooks/useToast';
 import { AuthService } from '@/lib/storage/authService';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import logo from '../../../../public/assets/logo.png';
 
 export default function Page() {
   const authService = new AuthService();
   const router = useRouter();
+  const { notifySuccess, notifyError } = useToast();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -30,17 +32,14 @@ export default function Page() {
       const isValidLogin = authService.login(formData.email, formData.password);
 
       if (isValidLogin) {
-        console.log('Inicio de sesión exitoso');
+        notifySuccess('Inicio de sesión exitoso');
         router.push('/');
       } else {
-        // TODO: IMPLEMENTAR SNACKBAR PARA ERRORES
-        console.error(
-          'Error: Las credenciales proporcionadas son incorrectas. Por favor, verifica tu email y contraseña e inténtalo de nuevo.'
-        );
+        notifyError('Las credenciales proporcionadas son incorrectas.');
       }
     } else {
-      console.error(
-        'Error: Por favor, asegúrate de llenar todos los campos requeridos correctamente.'
+      notifyError(
+        'Por favor, asegúrate de llenar todos los campos requeridos correctamente.'
       );
     }
   };
@@ -73,7 +72,6 @@ export default function Page() {
           required
         />
         <Button label="Iniciar Sesión" type="submit" disabled={!isFormValid} />
-
         <Link href="/crear-cuenta">
           <Button
             label="Crear cuenta"
@@ -85,6 +83,7 @@ export default function Page() {
             bgColor="whiteColor"
           />
         </Link>
+        {/* Include the ToastContainer at the end of your component */}
       </form>
     </>
   );
