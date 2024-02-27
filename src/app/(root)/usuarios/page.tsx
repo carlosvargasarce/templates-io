@@ -49,6 +49,18 @@ export default function Page() {
 
   //TODO: CREAR COMPONENTE PARA MODAL
   const handleDelete = () => {
+
+    if (selectedRows.length === 0) {
+      console.error('No se ha seleccionado ningún usuario para eliminar');
+      return;
+    }
+
+    const selectedUserIds = selectedRows.map((user) => user.id);
+    const updatedData = data.filter((user) => !selectedUserIds.includes(user.id));
+    setData(updatedData);
+
+    setSelectedRows([]);
+
     console.log('Remover el usuario: ', selectedRows[0].name);
   };
 
