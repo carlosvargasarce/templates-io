@@ -7,7 +7,9 @@ import { AuthService } from '@/lib/storage/authService';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
+import { Bounce, ToastContainer, ToastPosition, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import logo from '../../../../public/assets/logo.png';
 
 export default function Page() {
@@ -18,6 +20,28 @@ export default function Page() {
     email: '',
     password: '',
   });
+
+  const notifyErrorOptions = {
+    position: 'top-right' as ToastPosition,
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: 'light',
+    transition: Bounce,
+  };
+
+  const notifyError = (message: string) => {
+    toast.error(message, notifyErrorOptions);
+  };
+
+  const notifySuccess = (message: string) => {
+    toast.success(message, {
+      className: 'toast-success',
+    });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,17 +54,14 @@ export default function Page() {
       const isValidLogin = authService.login(formData.email, formData.password);
 
       if (isValidLogin) {
-        console.log('Inicio de sesión exitoso');
+        notifySuccess('Inicio de sesión exitoso');
         router.push('/');
       } else {
-        // TODO: IMPLEMENTAR SNACKBAR PARA ERRORES
-        console.error(
-          'Error: Las credenciales proporcionadas son incorrectas. Por favor, verifica tu email y contraseña e inténtalo de nuevo.'
-        );
+        notifyError('Las credenciales proporcionadas son incorrectas.');
       }
     } else {
-      console.error(
-        'Error: Por favor, asegúrate de llenar todos los campos requeridos correctamente.'
+      notifyError(
+        'Por favor, asegúrate de llenar todos los campos requeridos correctamente.'
       );
     }
   };
@@ -73,7 +94,6 @@ export default function Page() {
           required
         />
         <Button label="Iniciar Sesión" type="submit" disabled={!isFormValid} />
-
         <Link href="/crear-cuenta">
           <Button
             label="Crear cuenta"
@@ -85,6 +105,8 @@ export default function Page() {
             bgColor="whiteColor"
           />
         </Link>
+        <ToastContainer />{' '}
+        {/* Include the ToastContainer at the end of your component */}
       </form>
     </>
   );
