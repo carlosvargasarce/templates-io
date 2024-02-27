@@ -1,10 +1,10 @@
 import { UserProps } from '@/types/user';
 
 /**
- * Clase User
+ * Clase IUser
  * Descripción: Esta clase representa a un usuario en el sistema.
  */
-abstract class User {
+abstract class IUser {
   private id: string;
   private role: UserProps['role'];
   private name: string;
@@ -12,7 +12,7 @@ abstract class User {
   private password: string;
 
   /**
-   * Constructor de la clase User.
+   * Constructor de la clase IUser.
    * @param {UserProps} props - Propiedades para inicializar un usuario.
    */
   constructor({ id, name, email, password, role }: UserProps) {
@@ -65,4 +65,4 @@ abstract class User {
   abstract deshabilitar(): void;
 }
 
-export { User };
+export { IUser };

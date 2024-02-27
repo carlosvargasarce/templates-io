@@ -1,7 +1,7 @@
 import { UserProps } from '@/types/user';
-import { User } from '../models/User';
+import { IUser } from '../models/IUser';
 
-class Client extends User {
+class Client extends IUser {
   constructor({ id, name, email, password }: UserProps) {
     super({ id, name, email, password, role: 'Cliente' });
   }

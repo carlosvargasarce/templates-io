@@ -1,6 +1,6 @@
 import { UserProps } from '@/types/user';
-import { User } from '../models/User';
+import { IUser } from '../models/IUser';
 
 export interface IUserFactory {
-  createUser(userData: UserProps, answers: string[]): User;
+  createUser(userData: UserProps, answers: string[]): IUser;
 }
