@@ -51,4 +51,12 @@ export class StorageService {
     }
     return null;
   }
+
+  public deleteUser(id: string): void {
+    if (!this.isClientSide()) return;
+
+    let users = this.getUsers();
+    users = users.filter((user) => user.id !== id);
+    localStorage.setItem('users', JSON.stringify(users));
+  }
 }
