@@ -1,4 +1,4 @@
-import { StorageService } from '@/lib/storage/StorageService';
+import UserManager from '@/lib/manager/UserManager';
 import { UserProps } from '@/types/user';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -8,8 +8,8 @@ export function useRequireAuth() {
   const [activeUser, setActiveUser] = useState<UserProps | null>(null);
 
   useEffect(() => {
-    const storageService = StorageService.getInstance();
-    const user = storageService.getActiveUser();
+    const userManager = new UserManager();
+    const user = userManager.getActiveUser();
 
     if (!user) {
       router.push('/iniciar');
