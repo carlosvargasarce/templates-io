@@ -7,11 +7,11 @@ import { Moderator } from '../users/Moderator';
 import { IUserFactory } from './IUserFactory';
 
 class UserFactory implements IUserFactory {
-  createUser(userData: any, answers: string[]) {
+  createUser(userData: UserProps, answers: string[]) {
     const id = uuidv4();
     let user;
     const role = this.determineRoleBasedOnAnswers(answers);
-    const completeUserData = { ...userData, id, role };
+    const completeUserData = { ...userData, id };
 
     switch (role) {
       case 'Administrador':
