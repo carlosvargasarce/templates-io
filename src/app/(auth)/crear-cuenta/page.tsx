@@ -4,7 +4,7 @@ import Button from '@/components/Button/Button';
 import InputField from '@/components/InputField/InputField';
 import RadioButton from '@/components/RadioButton/RadioButton';
 import Title from '@/components/Title/Title';
-import UserFactory from '@/lib/factories/UserFactory';
+import UserManager from '@/lib/manager/UserManager';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -46,13 +46,15 @@ export default function Page() {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        id: '',
+        role: '',
       };
 
-      const userFactory = new UserFactory();
+      const userManager = new UserManager();
 
       try {
-        const user = userFactory.createUser(userData, answers);
-        console.log('Usuario creado con éxito:', user);
+        userManager.createUser(userData, answers);
+        console.log('Usuario creado con éxito');
         // TODO: CREAR UN SNACKBAR MOSTRANDO ESTOS MENSAJES
         router.push('/iniciar');
       } catch (error) {
