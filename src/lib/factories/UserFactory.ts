@@ -33,7 +33,7 @@ class UserFactory implements IUserFactory {
     return user;
   }
 
-  // Este metodo no es comun para posibles variantes de la fabrica
+  // Este metodo no es comun para posibles variantes de la fábrica
   determineRoleBasedOnAnswers(answers: string[]): UserProps['role'] {
     if (answers[0] == '1') {
       return 'Cliente';
