@@ -24,4 +24,19 @@
       flex-basis: 100%;
     }
   }
+
+  .editorLabel {
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 24px;
+  }
+
+  .editor {
+    padding: 16px;
+    border: 1px solid #b1b1b1;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    color: #525252;
+    width: 100%;
+  }
 }
