@@ -3,16 +3,18 @@
 import Button from '@/components/Button/Button';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
-import { useRequireAuth } from '@/hooks/useRequireAuth';
+import useToast from '@/hooks/useToast';
 import UserManager from '@/lib/manager/UserManager';
 import { UserProps } from '@/types/user';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import styles from './page.module.scss';
 
-//Estructura de las columnas
+/**
+ * Define la estructura de las columnas para la tabla de usuarios.
+ * @type {TableColumn<UserProps>[]}
+ */
 const columns: TableColumn<UserProps>[] = [
   {
     name: 'Nombre Completo',
@@ -32,53 +34,43 @@ const columns: TableColumn<UserProps>[] = [
   },
 ];
 
-const userManager = new UserManager();
-const users = userManager.getAllUsers();
-
+/**
+ * Componente de página que muestra una lista de usuarios y permite realizar acciones como eliminar o editar usuarios.
+ */
 export default function Page() {
-  const router = useRouter();
-
   const [selectedRows, setSelectedRows] = useState<UserProps[]>([]);
   const [toggleCleared, setToggleCleared] = useState(false);
   const [data, setData] = useState<UserProps[]>([]);
   const [loader, setLoader] = useState(true);
-  const [userManager, setUserManager] = useState<UserManager | null>(null);
-  const [users, setUsers] = useState<UserProps[]>([]);
-
-  const user = useRequireAuth();
-  const userRole = user?.role || '';
-  
-
-  
+  const [refreshDataTrigger, setRefreshDataTrigger] = useState(false);
+  const userManager = new UserManager();
+  const { notifyError } = useToast();
 
   useEffect(() => {
-    const userManagerInstance = new UserManager();
-    const usersData = userManagerInstance.getAllUsers();
-    setUserManager(userManagerInstance);
-    setUsers(usersData);
-    setData(usersData);
-    setLoader(false);
-  }, []);
+    const users = userManager.getAllUsers();
+    setData(users);
+    setLoader(false); // Desactiva el indicador de carga una vez que los datos están listos.
+  }, [refreshDataTrigger]);
 
+  /**
+   * Maneja la selección de filas en la tabla de usuarios.
+   * @param {any} state - Estado actual de las filas seleccionadas.
+   */
   const handleRowSelected = useCallback((state: any) => {
     setSelectedRows(state.selectedRows);
   }, []);
 
-  //TODO: CREAR COMPONENTE PARA MODAL
+  /**
+   * Maneja la acción de eliminar usuarios seleccionados.
+   */
   const handleDelete = () => {
-
     if (selectedRows.length === 0) {
-      console.error('No se ha seleccionado ningún usuario para eliminar');
+      notifyError('No se ha seleccionado ningún usuario para eliminar');
       return;
     }
 
-    const selectedUserIds = selectedRows.map((user) => user.id);
-    const updatedData = data.filter((user) => !selectedUserIds.includes(user.id));
-    setData(updatedData);
-
-    setSelectedRows([]);
-
-    console.log('Remover el usuario: ', selectedRows[0].name);
+    userManager.deleteUser(selectedRows[0].id);
+    setRefreshDataTrigger((current) => !current);
   };
 
   // TODO: CAMBIAR EL CHECKBOX POR UNO PROPIO (NICE TO HAVE) VER DOCUMENTACIÓN
@@ -90,7 +82,6 @@ export default function Page() {
           <Button label="Eliminar" bgColor="danger" onClick={handleDelete} />
         )}
 
-        {userRole === 'Administrador' ? (
         <Link
           href={
             selectedRows.length > 0
@@ -103,14 +94,6 @@ export default function Page() {
             bgColor="primaryColor"
           />
         </Link>
-      ) : (
-        // Si el usuario no es administrador, redirige al home
-        <Button
-        label="Ir al Home"
-        bgColor="primaryColor"
-        onClick={() => router.push('/')}
-        />
-      )}
       </div>
 
       {/* TODO: CREAR LOADER */}
@@ -119,6 +102,11 @@ export default function Page() {
       ) : (
         <DataTable
           columns={columns}
+          noDataComponent={
+            <div style={{ marginTop: '120px' }}>
+              No hay usuarios registrados
+            </div>
+          }
           data={data}
           customStyles={customStyles as any}
           selectableRows
