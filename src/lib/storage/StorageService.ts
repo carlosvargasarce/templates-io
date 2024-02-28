@@ -59,4 +59,32 @@ export class StorageService {
     users = users.filter((user) => user.id !== id);
     localStorage.setItem('users', JSON.stringify(users));
   }
+
+  public saveTemplate(template: any) {
+    if (!this.isClientSide()) return;
+
+    const templates = this.getTemplates();
+    templates.push(template);
+    localStorage.setItem('templates', JSON.stringify(templates));
+  }
+
+  public getTemplates(): any[] {
+    if (!this.isClientSide()) return [];
+
+    const templates = localStorage.getItem('templates');
+    return templates ? JSON.parse(templates) : [];
+  }
+
+  public getTemplateById(id: string) {
+    const templates = this.getTemplates();
+    return templates.find((template) => template.id === id);
+  }
+
+  public deleteTemplate(id: string): void {
+    if (!this.isClientSide()) return;
+
+    let templates = this.getTemplates();
+    templates = templates.filter((template) => template.id !== id);
+    localStorage.setItem('templates', JSON.stringify(templates));
+  }
 }
