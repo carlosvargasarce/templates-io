@@ -97,6 +97,9 @@ export default function Page() {
       ) : (
         <DataTable
           columns={columns}
+          noDataComponent={
+            <div style={{ marginTop: '120px' }}>No hay templates creados</div>
+          }
           data={data}
           customStyles={customStyles as any}
           selectableRows
