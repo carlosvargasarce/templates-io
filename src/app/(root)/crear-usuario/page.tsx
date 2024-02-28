@@ -19,6 +19,7 @@ import styles from './page.module.scss';
 export default function Page() {
   const router = useRouter();
   const { notifyError } = useToast();
+  const [passwordError, setPasswordError] = useState('');
 
   // Estado inicial del formulario, incluyendo el manejo de preguntas condicionales.
   const [formData, setFormData] = useState({
@@ -37,6 +38,12 @@ export default function Page() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'passwordConfirmation' && value !== formData.password) {
+      setPasswordError('Las contraseñas no coinciden.');
+    } else {
+      setPasswordError('');
+    }
   };
 
   // Verifica si el formulario es válido antes de permitir el envío.
@@ -52,32 +59,35 @@ export default function Page() {
    */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid) {
-      const answers = [formData.question1];
 
-      if (formData.question1 === '2') {
-        answers.push(formData.question2);
-      }
-
-      const userData = {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        id: '',
-        role: '',
-      };
-
-      const userManager = new UserManager();
-
-      try {
-        userManager.createUser(userData, answers);
-        router.push('/usuarios');
-      } catch (error) {
-        notifyError(`Error al crear usuario: ${error}`);
-      }
-    } else {
+    if (!isFormValid) {
       notifyError('El formulario no es válido.');
+      return;
     }
+
+    const answers = [formData.question1];
+    if (formData.question1 === '2') {
+      answers.push(formData.question2);
+    }
+
+    const userData = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      id: '',
+      role: '',
+    };
+
+    const userManager = new UserManager();
+
+    userManager
+      .createUser(userData, answers)
+      .then(() => {
+        router.push('/usuarios');
+      })
+      .catch((error) => {
+        notifyError(error);
+      });
   };
 
   return (
@@ -127,6 +137,10 @@ export default function Page() {
             onChange={handleChange}
             required
           />
+          {/* TODO: ESTE ERROR DEBE SER POSICIONADO RELATIVAMENTE AL INPUT  */}
+          {passwordError && (
+            <div className="label-error">Las contraseñas no coinciden.</div>
+          )}
         </div>
         <div className={styles.formControl}>
           <p>

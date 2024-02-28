@@ -7,6 +7,7 @@ import useToast from '@/hooks/useToast';
 import UserManager from '@/lib/manager/UserManager';
 import { UserProps } from '@/types/user';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import styles from './page.module.scss';
@@ -44,7 +45,9 @@ export default function Page() {
   const [loader, setLoader] = useState(true);
   const [refreshDataTrigger, setRefreshDataTrigger] = useState(false);
   const userManager = new UserManager();
-  const { notifyError } = useToast();
+  const router = useRouter();
+  const { notifySuccess, notifyError } = useToast();
+  const activeUser = userManager.getActiveUser();
 
   useEffect(() => {
     const users = userManager.getAllUsers();
@@ -64,13 +67,30 @@ export default function Page() {
    * Maneja la acción de eliminar usuarios seleccionados.
    */
   const handleDelete = () => {
+    const userToDelete = selectedRows[0].id;
+
     if (selectedRows.length === 0) {
       notifyError('No se ha seleccionado ningún usuario para eliminar');
       return;
     }
 
-    userManager.deleteUser(selectedRows[0].id);
-    setRefreshDataTrigger((current) => !current);
+    userManager
+      .deleteUser(userToDelete)
+      .then((message) => {
+        notifySuccess(message);
+        setRefreshDataTrigger((current) => !current);
+
+        if (userToDelete === activeUser?.id) {
+          router.push('/login');
+        }
+      })
+      .catch((error) => {
+        notifyError(error);
+      })
+      .finally(() => {
+        setSelectedRows([]);
+        setToggleCleared((prevToggle) => !prevToggle);
+      });
   };
 
   // TODO: CAMBIAR EL CHECKBOX POR UNO PROPIO (NICE TO HAVE) VER DOCUMENTACIÓN

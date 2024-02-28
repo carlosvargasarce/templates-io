@@ -74,3 +74,11 @@ input:focus-visible {
   font-weight: bold;
   cursor: pointer;
 }
+
+.label-error {
+  color: #dc3545;
+  font-size: 14px;
+  margin-bottom: 16px;
+  position: relative;
+  top: -12px;
+}
