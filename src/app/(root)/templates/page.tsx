@@ -3,14 +3,18 @@
 import Button from '@/components/Button/Button';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
+import useToast from '@/hooks/useToast';
+import TemplateManager from '@/lib/manager/TemplateManager';
 import { TemplateProps } from '@/types/template';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import styles from './page.module.scss';
-import { templates } from './templates';
 
-//Estructura de las columnas
+/**
+ * Define la estructura de las columnas para la tabla de usuarios.
+ * @type {TableColumn<TemplateProps>[]}
+ */
 const columns: TableColumn<TemplateProps>[] = [
   {
     name: 'Nombre',
@@ -32,20 +36,37 @@ const columns: TableColumn<TemplateProps>[] = [
 export default function Page() {
   const [selectedRows, setSelectedRows] = useState<TemplateProps[]>([]);
   const [toggleCleared, setToggleCleared] = useState(false);
-  const [data, setData] = useState(templates);
+  const [data, setData] = useState<TemplateProps[]>([]);
   const [loader, setLoader] = useState(true);
+  const [refreshDataTrigger, setRefreshDataTrigger] = useState(false);
+  const templateManager = new TemplateManager();
+  const { notifyError } = useToast();
 
   useEffect(() => {
-    setLoader(false);
-  }, []);
+    const templates = templateManager.getAllTemplates();
+    setData(templates);
+    setLoader(false); // Desactiva el indicador de carga una vez que los datos están listos.
+  }, [refreshDataTrigger]);
 
+  /**
+   * Maneja la selección de filas en la tabla de templates.
+   * @param {any} state - Estado actual de las filas seleccionadas.
+   */
   const handleRowSelected = useCallback((state: any) => {
     setSelectedRows(state.selectedRows);
   }, []);
 
-  //TODO: CREAR COMPONENTE PARA MODAL
+  /**
+   * Maneja la acción de eliminar templates seleccionados.
+   */
   const handleDelete = () => {
-    console.log('Remover el template: ', selectedRows[0].name);
+    if (selectedRows.length === 0) {
+      notifyError('No se ha seleccionado ningún template para eliminar');
+      return;
+    }
+
+    templateManager.deleteTemplate(selectedRows[0].id);
+    setRefreshDataTrigger((current) => !current);
   };
 
   // TODO: CAMBIAR EL CHECKBOX POR UNO PROPIO (NICE TO HAVE) VER DOCUMENTACIÓN
