@@ -11,28 +11,46 @@ import { useRouter } from 'next/navigation';
 import React, { FormEvent, useState } from 'react';
 import logo from '../../../../public/assets/logo.png';
 
+/**
+ * Página de inicio de sesión.
+ *
+ * Este componente permite a los usuarios iniciar sesión utilizando su correo electrónico y contraseña.
+ * Utiliza AuthService para la autenticación, useRouter para la navegación, y useToast para las notificaciones.
+ */
 export default function Page() {
+  // Hooks para servicios y estado de navegación.
   const authService = new AuthService();
   const router = useRouter();
-  const { notifySuccess, notifyError } = useToast();
+  const { notifyError } = useToast();
 
+  // Estado local para gestionar los datos del formulario de inicio de sesión.
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
 
+  /**
+   * Maneja el cambio en los campos del formulario actualizando el estado local.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - El evento del campo de formulario que cambió.
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  /**
+   * Maneja el envío del formulario de inicio de sesión.
+   *
+   * Valida los datos del formulario, intenta iniciar sesión a través de AuthService,
+   * y navega a la página principal en caso de éxito o muestra un error en caso contrario.
+   * @param {FormEvent} event - El evento de envío del formulario.
+   */
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (isFormValid) {
       const isValidLogin = authService.login(formData.email, formData.password);
 
       if (isValidLogin) {
-        notifySuccess('Inicio de sesión exitoso');
         router.push('/');
       } else {
         notifyError('Las credenciales proporcionadas son incorrectas.');
@@ -83,7 +101,6 @@ export default function Page() {
             bgColor="whiteColor"
           />
         </Link>
-        {/* Include the ToastContainer at the end of your component */}
       </form>
     </>
   );

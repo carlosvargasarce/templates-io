@@ -4,6 +4,7 @@ import Button from '@/components/Button/Button';
 import InputField from '@/components/InputField/InputField';
 import RadioButton from '@/components/RadioButton/RadioButton';
 import Title from '@/components/Title/Title';
+import useToast from '@/hooks/useToast';
 import UserManager from '@/lib/manager/UserManager';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,8 +12,17 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import logo from '../../../../public/assets/logo.png';
 
+/**
+ * Página de creación de cuenta.
+ *
+ * Permite a los usuarios crear una nueva cuenta proporcionando su nombre, correo electrónico,
+ * contraseña y preferencias específicas mediante preguntas.
+ */
 export default function Page() {
   const router = useRouter();
+  const { notifyError } = useToast();
+
+  // Estado inicial del formulario, incluyendo el manejo de preguntas condicionales.
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,26 +32,37 @@ export default function Page() {
     question2: '1',
   });
 
+  /**
+   * Actualiza el estado del formulario cuando los campos cambian.
+   * @param {React.ChangeEvent<HTMLInputElement>} e - Evento del cambio en el input.
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Verifica si el formulario es válido antes de permitir el envío.
   const isFormValid =
     formData.name &&
     formData.email &&
     formData.password &&
     formData.password === formData.passwordConfirmation;
 
+  /**
+   * Maneja el envío del formulario para crear una nueva cuenta.
+   * @param {React.FormEvent} e - Evento de envío del formulario.
+   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
+      // Construye un array de respuestas basado en la selección de preguntas.
       const answers = [formData.question1];
 
       if (formData.question1 === '2') {
         answers.push(formData.question2);
       }
 
+      // Prepara los datos del usuario para ser enviados.
       const userData = {
         name: formData.name,
         email: formData.email,
@@ -54,14 +75,12 @@ export default function Page() {
 
       try {
         userManager.createUser(userData, answers);
-        console.log('Usuario creado con éxito');
-        // TODO: CREAR UN SNACKBAR MOSTRANDO ESTOS MENSAJES
         router.push('/iniciar');
       } catch (error) {
-        console.error('Error al crear usuario:', error);
+        notifyError(`Error al crear usuario: ${error}`);
       }
     } else {
-      console.error('El formulario no es válido.');
+      notifyError('El formulario no es válido.');
     }
   };
 
@@ -131,6 +150,7 @@ export default function Page() {
             onChange={handleChange}
           />
         </div>
+        {/* Preguntas condicionales basadas en selecciones previas del usuario. */}
         {formData.question1 === '2' && (
           <div>
             <p>
