@@ -1,6 +1,7 @@
 'use client';
 
 import Button from '@/components/Button/Button';
+import Switch from '@/components/Switch/Switch';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
 import useToast from '@/hooks/useToast';
@@ -11,29 +12,6 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import styles from './page.module.scss';
-
-/**
- * Define la estructura de las columnas para la tabla de usuarios.
- * @type {TableColumn<UserProps>[]}
- */
-const columns: TableColumn<UserProps>[] = [
-  {
-    name: 'Nombre Completo',
-    selector: (row) => row.name,
-    sortable: true,
-  },
-  {
-    name: 'Correo Electrónico',
-    selector: (row) => row.email,
-    sortable: true,
-    hide: 768,
-  },
-  {
-    name: 'Rol',
-    selector: (row) => row.role,
-    sortable: true,
-  },
-];
 
 /**
  * Componente de página que muestra una lista de usuarios y permite realizar acciones como eliminar o editar usuarios.
@@ -49,6 +27,44 @@ export default function Page() {
   const { notifySuccess, notifyError } = useToast();
   const activeUser = userManager.getActiveUser();
 
+  /**
+   * Define la estructura de las columnas para la tabla de usuarios.
+   * @type {TableColumn<UserProps>[]}
+   */
+  const columns: TableColumn<UserProps>[] = [
+    {
+      name: 'Nombre Completo',
+      selector: (row) => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Correo Electrónico',
+      selector: (row) => row.email,
+      sortable: true,
+      hide: 768,
+    },
+    {
+      name: 'Rol',
+      selector: (row) => row.role,
+      sortable: true,
+    },
+    {
+      name: 'Habilitar',
+      selector: (row) => row.isEnabled,
+      cell: (row) => (
+        <Switch
+          id={`switch-${row.id}`}
+          name="isEnabled"
+          checked={row.isEnabled}
+          onChange={(e) => handleSwitchChange(row, e.target.checked)}
+        />
+      ),
+      ignoreRowClick: true,
+      sortable: true,
+      width: '94px',
+    },
+  ];
+
   useEffect(() => {
     const users = userManager.getAllUsers();
     setData(users);
@@ -62,6 +78,25 @@ export default function Page() {
   const handleRowSelected = useCallback((state: any) => {
     setSelectedRows(state.selectedRows);
   }, []);
+
+  /**
+   * Maneja el cambio en el estado del switch de habilitación de usuario.
+   * Actualiza el estado del usuario en el almacenamiento y refleja el cambio en la UI.
+   *
+   * @param {UserProps} user - El objeto usuario correspondiente a la fila donde el switch fue cambiado.
+   * @param {boolean} isEnabled - El nuevo estado de habilitación del usuario.
+   */
+  const handleSwitchChange = (user: UserProps, isEnabled: boolean): void => {
+    userManager
+      .toggleUserEnabled(user.id, isEnabled)
+      .then((message: string) => {
+        notifySuccess(message);
+        setRefreshDataTrigger((current: boolean) => !current);
+      })
+      .catch((error) => {
+        notifyError(error);
+      });
+  };
 
   /**
    * Maneja la acción de eliminar usuarios seleccionados.

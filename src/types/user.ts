@@ -6,4 +6,5 @@ export interface UserProps {
   email: string;
   password: string;
   role: Role | string;
+  isEnabled: boolean;
 }

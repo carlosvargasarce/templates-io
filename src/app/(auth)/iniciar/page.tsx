@@ -48,12 +48,15 @@ export default function Page() {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (isFormValid) {
+      //TODO: Hacer esto una promesa para manejar diferentes mensajes
       const isValidLogin = authService.login(formData.email, formData.password);
 
       if (isValidLogin) {
         router.push('/');
       } else {
-        notifyError('Las credenciales proporcionadas son incorrectas.');
+        notifyError(
+          'Las credenciales proporcionadas son incorrectas o el usuario esta deshabilitado.'
+        );
       }
     } else {
       notifyError(
