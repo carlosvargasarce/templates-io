@@ -80,6 +80,7 @@ export default function Page() {
       password: formData.password,
       id: '',
       role: '',
+      isEnabled: true,
     };
 
     const userManager = new UserManager();
