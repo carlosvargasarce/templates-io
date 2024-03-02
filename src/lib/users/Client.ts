@@ -3,16 +3,18 @@ import { IUser } from '../models/IUser';
 
 class Client extends IUser {
   constructor({ id, name, email, password }: UserProps) {
-    super({ id, name, email, password, role: 'Cliente' });
+    super({ id, name, email, password, role: 'Cliente', isEnabled: true });
   }
 
   habilitar(): void {
-    console.log('Habilitar mi Template.');
+    this.IsEnabled = true;
   }
 
   deshabilitar(): void {
-    console.log('Deshabilitar mi Template.');
+    this.IsEnabled = false;
   }
+
+  // TODO: La idea de mantener métodos diferentes se mantuvo inicialmente pero funcionalmente no fue ejecutable porque habilitar/deshabilitar trabajan bajo la propiedad isEnabled, son métodos que van separados de la lógico del manejo de usuarios (idea Inicial), se van a explorar opciones para variar las 3 clases
 }
 
 export { Client };

@@ -30,6 +30,25 @@ export class StorageService {
     localStorage.setItem('users', JSON.stringify(users));
   }
 
+  public saveUsers(users: any) {
+    if (!this.isClientSide()) return;
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  public updateUser(updatedUser: any) {
+    let users = this.getUsers();
+    const userIndex = users.findIndex(
+      (existingUser) => existingUser.id === updatedUser.id
+    );
+
+    if (userIndex !== -1) {
+      users[userIndex] = updatedUser;
+      localStorage.setItem('users', JSON.stringify(users));
+    } else {
+      console.warn('Usuario no encontrado para actualizar.');
+    }
+  }
+
   public getUsers(): any[] {
     if (!this.isClientSide()) return [];
 

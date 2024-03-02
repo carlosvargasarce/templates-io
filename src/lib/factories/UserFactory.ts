@@ -6,7 +6,18 @@ import { Client } from '../users/Client';
 import { Moderator } from '../users/Moderator';
 import { IUserFactory } from './IUserFactory';
 
+/**
+ * Implementación de la fábrica de usuarios que crea instancias de usuarios según su rol.
+ */
 class UserFactory implements IUserFactory {
+  /**
+   * Crea un nuevo usuario basado en los datos proporcionados y respuestas a ciertas preguntas.
+   *
+   * @param {UserProps} userData - Los datos básicos del usuario a ser creado.
+   * @param {string[]} answers - Respuestas a preguntas que ayudan a determinar el rol del usuario.
+   * @returns {Admin | Moderator | Client} Una nueva instancia de usuario según el rol determinado.
+   * @throws {Error} Lanza un error si el tipo de usuario es desconocido.
+   */
   createUser(userData: UserProps, answers: string[]) {
     const id = uuidv4();
     let user;
@@ -33,7 +44,12 @@ class UserFactory implements IUserFactory {
     return user;
   }
 
-  // Este metodo no es comun para posibles variantes de la fábrica
+  /**
+   * Determina el rol del usuario basado en las respuestas proporcionadas.
+   *
+   * @param {string[]} answers - Las respuestas a las preguntas proporcionadas durante el proceso de creación.
+   * @returns {UserProps['role']} El rol del usuario determinado por sus respuestas.
+   */
   determineRoleBasedOnAnswers(answers: string[]): UserProps['role'] {
     if (answers[0] == '1') {
       return 'Cliente';
@@ -42,6 +58,35 @@ class UserFactory implements IUserFactory {
     } else {
       return 'Moderador';
     }
+  }
+
+  //El siguiente método es únicamente por no contar con una base de datos dedicada.
+
+  /**
+   * Reinstancia un usuario a partir de los datos proporcionados.
+   * Útil para recuperar una instancia de usuario con métodos después de deserializar.
+   *
+   * @param {UserProps} userData - Los datos del usuario a ser reinstanciado.
+   * @returns {Admin | Moderator | Client} Una nueva instancia del usuario según el rol.
+   * @throws {Error} Lanza un error si el tipo de usuario es desconocido.
+   */
+  instantiateUser(userData: UserProps) {
+    let user;
+
+    switch (userData.role) {
+      case 'Administrador':
+        user = new Admin({ ...userData });
+        break;
+      case 'Moderador':
+        user = new Moderator({ ...userData });
+        break;
+      case 'Cliente':
+        user = new Client({ ...userData });
+        break;
+      default:
+        throw new Error('Tipo de usuario desconocido');
+    }
+    return user;
   }
 }
 
