@@ -12,7 +12,7 @@ export function useRequireAuth() {
     const user = userManager.getActiveUser();
 
     if (!user) {
-      router.push('/iniciar');
+      //router.push('/iniciar');
     } else {
       setActiveUser(user);
     }
