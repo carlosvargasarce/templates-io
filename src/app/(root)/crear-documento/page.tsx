@@ -59,7 +59,7 @@ export default function Page() {
     filteredTemplates = data.filter((template) => template.isReviewed === true);
     setTemplates(filteredTemplates);
     setLoader(false);
-  }, [refreshDataTrigger]);
+  }, [refreshDataTrigger, templateManager]);
 
   useEffect(() => {
     const loadEditorData = async () => {
@@ -274,7 +274,7 @@ export default function Page() {
               </div>
             )}
             {Object.keys(placeholderValues).map((placeholder) => (
-              <div className={styles.formControl}>
+              <div className={styles.formControl} key={placeholder}>
                 <InputField
                   key={placeholder}
                   id={placeholder}

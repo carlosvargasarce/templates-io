@@ -107,6 +107,7 @@ export default function Page() {
       text: '',
       id: '',
       isReviewed: formData.category === 'Para Revisión' ? false : true,
+      owner: '',
     };
 
     if (editorRef.current) {

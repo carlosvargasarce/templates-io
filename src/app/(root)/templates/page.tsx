@@ -33,6 +33,28 @@ export default function Page() {
     setShowButton(shouldShowButton);
   }, [canCreateTemplate, selectedRows.length]);
 
+  /**
+   * Maneja el cambio en el estado del switch de la revisión de template.
+   * Actualiza el estado del template en el estado de revisión y refleja el cambio en la UI.
+   *
+   * @param {TemplateProps} template - El objeto template correspondiente a la fila donde el switch fue cambiado.
+   * @param {boolean} isReviewed - El nuevo estado de revisión del template.
+   */
+  const handleSwitchChange = (
+    template: TemplateProps,
+    isReviewed: boolean
+  ): void => {
+    templateManager
+      .toggleTemplateIsReviewed(template.id, isReviewed)
+      .then((message: string) => {
+        notifySuccess(message);
+        setRefreshDataTrigger((current: boolean) => !current);
+      })
+      .catch((error) => {
+        notifyError(error);
+      });
+  };
+
   useEffect(() => {
     /**
      * Define la estructura de las columnas para la tabla de templates.
@@ -77,35 +99,13 @@ export default function Page() {
     }
 
     setColumns(initialColumns);
-  }, [isModerator]);
+  }, [isModerator, handleSwitchChange]);
 
   useEffect(() => {
     const templates = templateManager.getAllTemplates();
     setData(templates);
     setLoader(false); // Desactiva el indicador de carga una vez que los datos están listos.
-  }, [refreshDataTrigger]);
-
-  /**
-   * Maneja el cambio en el estado del switch de la revisión de template.
-   * Actualiza el estado del template en el estado de revisión y refleja el cambio en la UI.
-   *
-   * @param {TemplateProps} template - El objeto template correspondiente a la fila donde el switch fue cambiado.
-   * @param {boolean} isReviewed - El nuevo estado de revisión del template.
-   */
-  const handleSwitchChange = (
-    template: TemplateProps,
-    isReviewed: boolean
-  ): void => {
-    templateManager
-      .toggleTemplateIsReviewed(template.id, isReviewed)
-      .then((message: string) => {
-        notifySuccess(message);
-        setRefreshDataTrigger((current: boolean) => !current);
-      })
-      .catch((error) => {
-        notifyError(error);
-      });
-  };
+  }, [refreshDataTrigger, templateManager]);
 
   /**
    * Maneja la selección de filas en la tabla de templates.
