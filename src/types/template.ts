@@ -5,4 +5,6 @@ export interface TemplateProps {
   keywords: string[];
   category: string;
   text: string;
+  isReviewed: boolean;
+  owner: string;
 }

@@ -11,6 +11,8 @@ abstract class ITemplate {
   private keywords: string[];
   private category: string;
   private text: string;
+  private isReviewed: boolean;
+  private owner: string;
 
   /**
    * Constructor de la clase ITemplate.
@@ -23,6 +25,8 @@ abstract class ITemplate {
     keywords,
     category,
     text,
+    isReviewed,
+    owner,
   }: TemplateProps) {
     this.id = id;
     this.name = name;
@@ -30,6 +34,8 @@ abstract class ITemplate {
     this.keywords = keywords;
     this.category = category;
     this.text = text;
+    this.isReviewed = isReviewed;
+    this.owner = owner;
   }
 
   // Getters y Setters
@@ -75,6 +81,22 @@ abstract class ITemplate {
 
   set Text(value: string) {
     this.text = value;
+  }
+
+  get IsReviewed(): boolean {
+    return this.isReviewed;
+  }
+
+  set IsReviewed(value: boolean) {
+    this.isReviewed = value;
+  }
+
+  get Owner(): string {
+    return this.owner;
+  }
+
+  set Owner(value: string) {
+    this.owner = value;
   }
 
   //Métodos abstractos

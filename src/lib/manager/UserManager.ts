@@ -108,7 +108,6 @@ class UserManager {
     return new Promise((resolve, reject) => {
       const userObj = this.storageService.getUserById(id);
 
-      console.log('USER', userObj);
       if (!userObj) {
         reject('Usuario no encontrado.');
         return;
@@ -123,21 +122,13 @@ class UserManager {
 
       const user = this.userFactory.instantiateUser(userObj);
 
-      //userObj.isEnabled = enable;
-
       if (enable) {
-        console.log('Abling user');
         user.habilitar();
       } else {
-        console.log('Disabling user');
         user.deshabilitar();
       }
 
       this.storageService.updateUser(user);
-
-      //console.log('USER2', user);
-
-      //this.storageService.updateUser(user);
 
       resolve(
         enable

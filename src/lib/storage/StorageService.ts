@@ -30,11 +30,6 @@ export class StorageService {
     localStorage.setItem('users', JSON.stringify(users));
   }
 
-  public saveUsers(users: any) {
-    if (!this.isClientSide()) return;
-    localStorage.setItem('users', JSON.stringify(users));
-  }
-
   public updateUser(updatedUser: any) {
     let users = this.getUsers();
     const userIndex = users.findIndex(
@@ -87,6 +82,20 @@ export class StorageService {
     localStorage.setItem('templates', JSON.stringify(templates));
   }
 
+  public updateTemplate(updatedTemplate: any) {
+    let templates = this.getTemplates();
+    const templateIndex = templates.findIndex(
+      (existingTemplate) => existingTemplate.id === updatedTemplate.id
+    );
+
+    if (templateIndex !== -1) {
+      templates[templateIndex] = updatedTemplate;
+      localStorage.setItem('templates', JSON.stringify(templates));
+    } else {
+      console.warn('Template no encontrado para actualizar.');
+    }
+  }
+
   public getTemplates(): any[] {
     if (!this.isClientSide()) return [];
 
@@ -105,5 +114,33 @@ export class StorageService {
     let templates = this.getTemplates();
     templates = templates.filter((template) => template.id !== id);
     localStorage.setItem('templates', JSON.stringify(templates));
+  }
+
+  public saveDocument(template: any) {
+    if (!this.isClientSide()) return;
+
+    const documents = this.getDocuments();
+    documents.push(template);
+    localStorage.setItem('documents', JSON.stringify(documents));
+  }
+
+  public getDocuments(): any[] {
+    if (!this.isClientSide()) return [];
+
+    const documents = localStorage.getItem('documents');
+    return documents ? JSON.parse(documents) : [];
+  }
+
+  public getDocumentById(id: string) {
+    const documents = this.getDocuments();
+    return documents.find((template) => template.id === id);
+  }
+
+  public deleteDocument(id: string): void {
+    if (!this.isClientSide()) return;
+
+    let documents = this.getDocuments();
+    documents = documents.filter((template) => template.id !== id);
+    localStorage.setItem('documents', JSON.stringify(documents));
   }
 }

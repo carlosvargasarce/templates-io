@@ -27,6 +27,8 @@ class DefaultTemplate extends ITemplate {
       keywords: [...this.Keywords],
       category: this.Category,
       text: this.Text,
+      isReviewed: this.IsReviewed,
+      owner: this.Owner,
     };
 
     // Devuelve una nueva instancia de DefaultTemplate con las propiedades clonadas.
