@@ -6,6 +6,7 @@ import RadioButton from '@/components/RadioButton/RadioButton';
 import Title from '@/components/Title/Title';
 import useToast from '@/hooks/useToast';
 import UserManager from '@/lib/manager/UserManager';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import styles from './page.module.scss';
@@ -190,11 +191,25 @@ export default function Page() {
               />
             </div>
           )}
+        </div>
+        <div className={styles.formControlLong}>
+          <Link href="/usuarios">
+            <Button
+              label="Cancelar"
+              style={{
+                borderColor: '#00a96c',
+                color: '#00a96c',
+                marginBottom: '24px',
+                marginTop: '24px',
+              }}
+              bgColor="whiteColor"
+            />
+          </Link>
           <Button
-            label="Crear Cuenta"
+            label="Crear Usuario"
             type="submit"
             disabled={!isFormValid}
-            style={{ marginBottom: '24px', marginTop: '24px' }}
+            style={{ marginBottom: '24px', marginTop: '24px', float: 'right' }}
           />
         </div>
       </form>

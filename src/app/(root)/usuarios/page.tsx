@@ -60,8 +60,10 @@ export default function Page() {
         />
       ),
       ignoreRowClick: true,
-      sortable: true,
-      width: '94px',
+      width: '120px',
+      style: {
+        justifyContent: 'center',
+      },
     },
   ];
 
