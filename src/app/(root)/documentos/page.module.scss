@@ -1,0 +1,28 @@
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin: 16px 0;
+
+  button {
+    margin-right: 16px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    @media (max-width: 768px) {
+      width: calc(50% - 8px);
+      min-width: auto !important;
+    }
+  }
+
+  > a {
+    @media (max-width: 768px) {
+      width: calc(50% - 8px);
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

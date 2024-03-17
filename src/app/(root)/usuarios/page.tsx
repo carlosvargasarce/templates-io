@@ -60,8 +60,10 @@ export default function Page() {
         />
       ),
       ignoreRowClick: true,
-      sortable: true,
-      width: '94px',
+      width: '120px',
+      style: {
+        justifyContent: 'center',
+      },
     },
   ];
 
@@ -69,7 +71,7 @@ export default function Page() {
     const users = userManager.getAllUsers();
     setData(users);
     setLoader(false); // Desactiva el indicador de carga una vez que los datos están listos.
-  }, [refreshDataTrigger]);
+  }, [refreshDataTrigger, userManager]);
 
   /**
    * Maneja la selección de filas en la tabla de usuarios.

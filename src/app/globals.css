@@ -7,6 +7,7 @@
 html,
 body {
   font-size: 18px;
+  line-height: 32px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -81,4 +82,14 @@ input:focus-visible {
   margin-bottom: 16px;
   position: relative;
   top: -12px;
+}
+
+/* Ajustes de editor */
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: 100%;
+}
+
+.codex-editor__redactor {
+  padding-bottom: 48px !important;
 }

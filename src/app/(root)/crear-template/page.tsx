@@ -2,6 +2,7 @@
 
 import Button from '@/components/Button/Button';
 import InputField from '@/components/InputField/InputField';
+import Select from '@/components/Select/Select';
 import Title from '@/components/Title/Title';
 import useToast from '@/hooks/useToast';
 import TemplateManager from '@/lib/manager/TemplateManager';
@@ -10,6 +11,7 @@ import Embed from '@editorjs/embed';
 import Header from '@editorjs/header';
 import List from '@editorjs/list';
 import SimpleImage from '@editorjs/simple-image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import styles from './page.module.scss';
@@ -26,15 +28,19 @@ export default function Page() {
   const router = useRouter();
   const { notifyError } = useToast();
 
+  const categories = [
+    { id: 'Privado', name: 'Privado' },
+    { id: 'Público', name: 'Público' },
+    { id: 'Para Revisión', name: 'Para Revisión' },
+  ];
+
   useEffect(() => {
     if (typeof window !== 'undefined' && !editorRef.current) {
       const EditorJS = require('@editorjs/editorjs').default;
       editorRef.current = new EditorJS({
         holder: 'editorjs',
-        autofocus: true,
         placeholder:
           'Empezemos a crear un asombroso template, usa nombres entre llaves para utilizar como espacios dinámicos, por ejemplo: Mi nombre es {{Nombre Completo}}',
-
         tools: {
           simpleImage: SimpleImage,
           embed: Embed,
@@ -67,7 +73,9 @@ export default function Page() {
    * Actualiza el estado del formulario cuando los campos cambian.
    * @param {React.ChangeEvent<HTMLInputElement>} e - Evento del cambio en el input.
    */
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -98,6 +106,8 @@ export default function Page() {
       category: formData.category,
       text: '',
       id: '',
+      isReviewed: formData.category === 'Para Revisión' ? false : true,
+      owner: '',
     };
 
     if (editorRef.current) {
@@ -136,14 +146,15 @@ export default function Page() {
           />
         </div>
         <div className={styles.formControl}>
-          <InputField
+          <Select
             id="category"
             name="category"
             label="Categoría"
-            type="text"
+            items={categories}
             value={formData.category}
             onChange={handleChange}
             required
+            defaultOptionMessage="Seleccione una categoría"
           />
         </div>
         <div className={styles.formControlLong}>
@@ -172,12 +183,24 @@ export default function Page() {
           <p className={styles.editorLabel}>Texto:</p>
           <div className={styles.editor} id="editorjs" />
         </div>
-        <div className={styles.formControl}>
+        <div className={styles.formControlLong}>
+          <Link href="/templates">
+            <Button
+              label="Cancelar"
+              style={{
+                borderColor: '#00a96c',
+                color: '#00a96c',
+                marginBottom: '24px',
+                marginTop: '24px',
+              }}
+              bgColor="whiteColor"
+            />
+          </Link>
           <Button
             label="Crear Template"
             type="submit"
             disabled={!isFormValid}
-            style={{ marginBottom: '24px', marginTop: '24px' }}
+            style={{ marginBottom: '24px', marginTop: '24px', float: 'right' }}
           />
         </div>
       </form>
