@@ -31,14 +31,14 @@ export default function Page() {
     const data = templateManager.getAllTemplates();
     setTemplates(data);
     setLoader(false);
-  }, [refreshTemplatesDataTrigger, templateManager]);
+  }, [refreshTemplatesDataTrigger]);
 
   useEffect(() => {
     //Cargar los documentos
     const documents = documentManager.getAllDocuments();
     setData(documents);
     setLoader(false); // Desactiva el indicador de carga una vez que los datos están listos.
-  }, [refreshDataTrigger, documentManager]);
+  }, [refreshDataTrigger]);
 
   /**
    * Maneja la selección de filas en la tabla de documentos.
