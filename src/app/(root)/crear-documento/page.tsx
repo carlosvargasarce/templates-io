@@ -84,7 +84,7 @@ export default function Page() {
         editorRef.current = new EditorJS({
           holder: 'editorjs',
           readOnly: true,
-          data: JSON.parse(selectedTemplate.text),
+          data: JSON.parse(selectedTemplate.text || '{}'),
           tools: {
             simpleImage: SimpleImage,
             embed: Embed,
@@ -94,8 +94,9 @@ export default function Page() {
         });
 
         //Extraer los placeholders del texto
+        // Ensure selectedTemplate.text is a string, using '' as fallback if it's undefined.
         const placeholders: string[] = extractPlaceholders(
-          selectedTemplate.text
+          selectedTemplate.text || ''
         ) as string[];
 
         //Asignarlos al state
@@ -217,10 +218,10 @@ export default function Page() {
     let documentData = {
       name: formData.name,
       templates: [formData.template1, formData.template2].filter(
-        (templateId) => templateId !== ''
+        (templateId) => templateId && templateId !== ''
       ),
       content: substitutePlaceholders(
-        selectedTemplate ? selectedTemplate.text : '',
+        selectedTemplate && selectedTemplate.text ? selectedTemplate.text : '',
         placeholderValues
       ),
       id: '',
@@ -260,7 +261,10 @@ export default function Page() {
                 id="template1"
                 name="template1"
                 label="Template"
-                items={templates}
+                items={templates.map((template) => ({
+                  id: template.id || 'default-id',
+                  name: template.name || 'Default Name',
+                }))}
                 value={formData.template1 ? formData.template1 : ''}
                 onChange={handleChange}
                 required

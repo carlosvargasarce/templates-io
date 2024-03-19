@@ -24,7 +24,7 @@ class DefaultTemplate extends ITemplate {
       id: this.Id,
       name: this.Name,
       description: this.Description,
-      keywords: [...this.Keywords],
+      keywords: this.Keywords ? [...this.Keywords] : [],
       category: this.Category,
       text: this.Text,
       isReviewed: this.IsReviewed,
@@ -33,6 +33,16 @@ class DefaultTemplate extends ITemplate {
 
     // Devuelve una nueva instancia de DefaultTemplate con las propiedades clonadas.
     return new DefaultTemplate(cloneProps);
+  }
+
+  review(
+    templateId: string,
+    isReviewed: boolean,
+    userEmail: string
+  ): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      console.log('Revisando el template...');
+    });
   }
 }
 

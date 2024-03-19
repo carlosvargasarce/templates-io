@@ -1,49 +1,42 @@
 import { TemplateProps } from '@/types/template';
 
 /**
- * Clase ITemplate
- * Descripción: Esta clase representa a un template en el sistema.
+ * Clase abstracta ITemplate
+ * Descripción: Esta clase representa un template en el sistema.
  */
 abstract class ITemplate {
-  private id: string;
-  private name: string;
-  private description: string;
-  private keywords: string[];
-  private category: string;
-  private text: string;
-  private isReviewed: boolean;
-  private owner: string;
+  private id?: string;
+  private name?: string;
+  private description?: string;
+  private keywords?: string[];
+  private category?: string;
+  private text?: string;
+  private isReviewed?: boolean;
+  private owner?: string;
 
   /**
    * Constructor de la clase ITemplate.
-   * @param {TemplateProps} props - Propiedades para inicializar un template.
+   * @param {TemplateProps} props - Propiedades para inicializar un template. Es opcional.
    */
-  constructor({
-    id,
-    name,
-    description,
-    keywords,
-    category,
-    text,
-    isReviewed,
-    owner,
-  }: TemplateProps) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.keywords = keywords;
-    this.category = category;
-    this.text = text;
-    this.isReviewed = isReviewed;
-    this.owner = owner;
+  constructor(props?: TemplateProps) {
+    if (props) {
+      this.id = props.id;
+      this.name = props.name;
+      this.description = props.description;
+      this.keywords = props.keywords;
+      this.category = props.category;
+      this.text = props.text;
+      this.isReviewed = props.isReviewed;
+      this.owner = props.owner;
+    }
   }
 
   // Getters y Setters
-  get Id(): string {
+  get Id(): string | undefined {
     return this.id;
   }
 
-  get Name(): string {
+  get Name(): string | undefined {
     return this.name;
   }
 
@@ -51,7 +44,7 @@ abstract class ITemplate {
     this.name = value;
   }
 
-  get Keywords(): string[] {
+  get Keywords(): string[] | undefined {
     return this.keywords;
   }
 
@@ -59,7 +52,7 @@ abstract class ITemplate {
     this.keywords = value;
   }
 
-  get Description(): string {
+  get Description(): string | undefined {
     return this.description;
   }
 
@@ -67,7 +60,7 @@ abstract class ITemplate {
     this.description = value;
   }
 
-  get Category(): string {
+  get Category(): string | undefined {
     return this.category;
   }
 
@@ -75,7 +68,7 @@ abstract class ITemplate {
     this.category = value;
   }
 
-  get Text(): string {
+  get Text(): string | undefined {
     return this.text;
   }
 
@@ -83,7 +76,7 @@ abstract class ITemplate {
     this.text = value;
   }
 
-  get IsReviewed(): boolean {
+  get IsReviewed(): boolean | undefined {
     return this.isReviewed;
   }
 
@@ -91,7 +84,7 @@ abstract class ITemplate {
     this.isReviewed = value;
   }
 
-  get Owner(): string {
+  get Owner(): string | undefined {
     return this.owner;
   }
 
@@ -99,8 +92,22 @@ abstract class ITemplate {
     this.owner = value;
   }
 
-  //Métodos abstractos
+  // Métodos abstractos
   abstract clone(): ITemplate;
+
+  /**
+   * Método abstracto para revisar un template.
+   * @param templateId El ID del template a revisar.
+   * @param isReviewed El nuevo estado de revisión del template.
+   * @param userEmail El correo electrónico del usuario que realiza la revisión.
+   * @param userPassword La contraseña del usuario que realiza la revisión.
+   * @returns Una promesa que se resuelve a un mensaje de string sobre la acción de revisión.
+   */
+  abstract review(
+    templateId: string,
+    isReviewed: boolean,
+    userEmail: string
+  ): Promise<string>;
 }
 
 export { ITemplate };
