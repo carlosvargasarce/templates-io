@@ -59,7 +59,7 @@ export default function Page() {
     filteredTemplates = data.filter((template) => template.isReviewed === true);
     setTemplates(filteredTemplates);
     setLoader(false);
-  }, [refreshDataTrigger, templateManager]);
+  }, [refreshDataTrigger]);
 
   useEffect(() => {
     const loadEditorData = async () => {

@@ -71,7 +71,7 @@ export default function Page() {
     const users = userManager.getAllUsers();
     setData(users);
     setLoader(false); // Desactiva el indicador de carga una vez que los datos están listos.
-  }, [refreshDataTrigger, userManager]);
+  }, [refreshDataTrigger]);
 
   /**
    * Maneja la selección de filas en la tabla de usuarios.
