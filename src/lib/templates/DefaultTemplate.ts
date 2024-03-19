@@ -24,7 +24,7 @@ class DefaultTemplate extends ITemplate {
       id: this.Id,
       name: this.Name,
       description: this.Description,
-      keywords: [...this.Keywords],
+      keywords: this.Keywords ? [...this.Keywords] : [],
       category: this.Category,
       text: this.Text,
       isReviewed: this.IsReviewed,
