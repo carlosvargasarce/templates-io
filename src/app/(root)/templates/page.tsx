@@ -7,6 +7,8 @@ import { customStyles } from '@/constants/tableStylesOverrides';
 import useToast from '@/hooks/useToast';
 import TemplateManager from '@/lib/manager/TemplateManager';
 import UserManager from '@/lib/manager/UserManager';
+import ProxyModerator from '@/lib/proxies/TemplateProxyModerator';
+import { AuthService } from '@/lib/storage/authService';
 import { TemplateProps } from '@/types/template';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
@@ -20,6 +22,8 @@ export default function Page() {
   const [loader, setLoader] = useState(true);
   const [refreshDataTrigger, setRefreshDataTrigger] = useState(false);
   const templateManager = new TemplateManager();
+  const authService = new AuthService();
+  const proxyModerador = new ProxyModerator(authService);
   const userManager = new UserManager();
   const { notifySuccess, notifyError } = useToast();
   const activeUser = userManager.getActiveUser();
@@ -33,26 +37,26 @@ export default function Page() {
     setShowButton(shouldShowButton);
   }, [canCreateTemplate, selectedRows.length]);
 
-  /**
-   * Maneja el cambio en el estado del switch de la revisión de template.
-   * Actualiza el estado del template en el estado de revisión y refleja el cambio en la UI.
-   *
-   * @param {TemplateProps} template - El objeto template correspondiente a la fila donde el switch fue cambiado.
-   * @param {boolean} isReviewed - El nuevo estado de revisión del template.
-   */
-  const handleSwitchChange = (
-    template: TemplateProps,
-    isReviewed: boolean
-  ): void => {
-    templateManager
-      .toggleTemplateIsReviewed(template.id, isReviewed)
-      .then((message: string) => {
-        notifySuccess(message);
-        setRefreshDataTrigger((current: boolean) => !current);
-      })
-      .catch((error) => {
-        notifyError(error);
-      });
+  const handleSwitchChange = (template: TemplateProps, isReviewed: boolean) => {
+    // Asegurar primero que activeUser no es null
+    if (activeUser) {
+      proxyModerador
+        .review(template.id, isReviewed, activeUser.email)
+        .then((message: string) => {
+          notifySuccess(message);
+          //Refrescar tabla
+          setRefreshDataTrigger((current: boolean) => !current);
+        })
+        .catch((error: any) => {
+          // Mostrar errores
+          notifyError(error.message);
+        });
+    } else {
+      // Handle the case where there is no active user (e.g., not logged in)
+      notifyError(
+        'Debes estar logeado y ser moderador para ejecutar esta acción.'
+      );
+    }
   };
 
   useEffect(() => {

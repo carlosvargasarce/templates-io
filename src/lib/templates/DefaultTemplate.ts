@@ -34,6 +34,16 @@ class DefaultTemplate extends ITemplate {
     // Devuelve una nueva instancia de DefaultTemplate con las propiedades clonadas.
     return new DefaultTemplate(cloneProps);
   }
+
+  review(
+    templateId: string,
+    isReviewed: boolean,
+    userEmail: string
+  ): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      console.log('Revisando el template...');
+    });
+  }
 }
 
 export { DefaultTemplate };
