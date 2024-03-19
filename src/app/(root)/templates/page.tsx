@@ -39,7 +39,7 @@ export default function Page() {
 
   const handleSwitchChange = (template: TemplateProps, isReviewed: boolean) => {
     // Asegurar primero que activeUser no es null
-    if (activeUser) {
+    if (activeUser && template.id) {
       proxyModerador
         .review(template.id, isReviewed, activeUser.email)
         .then((message: string) => {
@@ -67,17 +67,18 @@ export default function Page() {
     const initialColumns: TableColumn<TemplateProps>[] = [
       {
         name: 'Nombre',
-        selector: (row) => row.name,
+        selector: (row: TemplateProps) => row.name ?? '',
         sortable: true,
       },
       {
         name: 'Palabras Clave',
-        selector: (row) => row.keywords.join(', '),
+        selector: (row: TemplateProps) =>
+          row.keywords ? row.keywords.join(', ') : '',
         sortable: true,
       },
       {
         name: 'Categoría',
-        selector: (row) => row.category,
+        selector: (row: TemplateProps) => row.category ?? '',
         sortable: true,
       },
     ];
@@ -85,12 +86,12 @@ export default function Page() {
     if (isModerator) {
       initialColumns.push({
         name: 'Aprobar',
-        selector: (row) => row.isReviewed,
+        selector: (row: TemplateProps) => row.isReviewed ?? '',
         cell: (row) => (
           <Switch
             id={`switch-${row.id}`}
             name="isReviewed"
-            checked={row.isReviewed}
+            checked={row.isReviewed ?? false}
             onChange={(e) => handleSwitchChange(row, e.target.checked)}
           />
         ),
@@ -128,7 +129,7 @@ export default function Page() {
       return;
     }
 
-    templateManager.deleteTemplate(selectedRows[0].id);
+    templateManager.deleteTemplate(selectedRows[0].id ?? '');
     setRefreshDataTrigger((current) => !current);
     setSelectedRows([]);
     setToggleCleared((current) => !current);
