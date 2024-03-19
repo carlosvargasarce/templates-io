@@ -99,13 +99,13 @@ export default function Page() {
     }
 
     setColumns(initialColumns);
-  }, [isModerator, handleSwitchChange]);
+  }, [isModerator]);
 
   useEffect(() => {
     const templates = templateManager.getAllTemplates();
     setData(templates);
     setLoader(false); // Desactiva el indicador de carga una vez que los datos están listos.
-  }, [refreshDataTrigger, templateManager]);
+  }, [refreshDataTrigger]);
 
   /**
    * Maneja la selección de filas en la tabla de templates.
