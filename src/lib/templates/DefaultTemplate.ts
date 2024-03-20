@@ -44,6 +44,15 @@ class DefaultTemplate extends ITemplate {
       console.log('Revisando el template...');
     });
   }
+
+  /**
+   * Implementación del método abstracto render. En este contexto, podría lanzar un error
+   * indicando que la operación no es soportada
+   */
+
+  render(): string {
+    throw new Error('Operación no soportada.');
+  }
 }
 
 export { DefaultTemplate };

@@ -48,10 +48,14 @@ class ProxyModerador extends ITemplate {
   }
 
   /**
-   * Implementación del método abstracto clone. En este contexto, podría lanzar un error
+   * Implementación del método abstracto clone y render. En este contexto, podría lanzar un error
    * indicando que la operación no es soportada
    */
   clone(): ITemplate {
+    throw new Error('Operación no soportada.');
+  }
+
+  render(): string {
     throw new Error('Operación no soportada.');
   }
 }

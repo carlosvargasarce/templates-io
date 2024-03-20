@@ -13,4 +13,5 @@ export interface SelectProps {
   style?: React.CSSProperties;
   items: TemplateOption[];
   defaultOptionMessage: string;
+  disabled?: boolean;
 }
