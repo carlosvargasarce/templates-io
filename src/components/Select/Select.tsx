@@ -12,6 +12,7 @@ const Select: React.FC<SelectProps> = ({
   required = false,
   style,
   defaultOptionMessage,
+  disabled = false,
   ...props
 }) => {
   const selectStyle: React.CSSProperties = {
@@ -48,6 +49,7 @@ const Select: React.FC<SelectProps> = ({
         onChange={onChange}
         required={required}
         style={selectStyle}
+        disabled={disabled}
         {...props}
       >
         <option value="">{defaultOptionMessage}</option>

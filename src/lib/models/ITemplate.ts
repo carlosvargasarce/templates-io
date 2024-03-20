@@ -108,6 +108,8 @@ abstract class ITemplate {
     isReviewed: boolean,
     userEmail: string
   ): Promise<string>;
+
+  abstract render(): string;
 }
 
 export { ITemplate };
