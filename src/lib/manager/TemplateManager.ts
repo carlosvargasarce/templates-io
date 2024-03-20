@@ -1,5 +1,6 @@
 import { TemplateProps } from '@/types/template';
 import { v4 as uuidv4 } from 'uuid';
+import { ITemplate } from '../models/ITemplate';
 import { StorageService } from '../storage/StorageService';
 import { DefaultTemplate } from '../templates/DefaultTemplate';
 import UserManager from './UserManager';
@@ -82,6 +83,11 @@ class TemplateManager {
    */
   public deleteTemplate(id: string): void {
     this.storageService.deleteTemplate(id);
+  }
+
+  public convertPropsToTemplate(templateProps: TemplateProps): ITemplate {
+    const template = new DefaultTemplate(templateProps);
+    return template;
   }
 
   /**

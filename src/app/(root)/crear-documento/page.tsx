@@ -2,11 +2,13 @@
 
 import Button from '@/components/Button/Button';
 import InputField from '@/components/InputField/InputField';
+import RadioButton from '@/components/RadioButton/RadioButton';
 import Select from '@/components/Select/Select';
 import Title from '@/components/Title/Title';
 import useToast from '@/hooks/useToast';
 import DocumentManager from '@/lib/manager/DocumentManager';
 import TemplateManager from '@/lib/manager/TemplateManager';
+import { ITemplate } from '@/lib/models/ITemplate';
 import { TemplateProps } from '@/types/template';
 import EditorJs from '@editorjs/editorjs';
 import Embed from '@editorjs/embed';
@@ -31,7 +33,10 @@ export default function Page() {
   const { notifyError } = useToast();
   const [templates, setTemplates] = useState<TemplateProps[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateProps>();
+  const [isMultipleTemplate, setIsMultipleTemplate] = useState(false);
+  const [selectedTemplate2, setSelectedTemplate2] = useState<TemplateProps>();
   const [loader, setLoader] = useState(true);
+  const [content, setContent] = useState({});
   const templateManager = new TemplateManager();
   const [refreshDataTrigger, setRefreshDataTrigger] = useState(false);
   //Datos que se deben de rellenar del texto del template
@@ -43,6 +48,7 @@ export default function Page() {
     name: string;
     template1: string;
     template2: string;
+    useMultipleTemplates: boolean;
   };
 
   // Estado inicial del formulario, incluyendo el manejo de preguntas condicionales.
@@ -50,6 +56,7 @@ export default function Page() {
     name: '',
     template1: '',
     template2: '',
+    useMultipleTemplates: false,
   });
 
   useEffect(() => {
@@ -63,28 +70,59 @@ export default function Page() {
 
   useEffect(() => {
     const loadEditorData = async () => {
-      if (typeof window !== 'undefined' && formData.template1) {
-        const selectedTemplate = templates.find(
-          (template) => formData.template1 && template.id === formData.template1
+      if (
+        typeof window !== 'undefined' &&
+        (formData.template1 || formData.template2)
+      ) {
+        const template1 = templates.find(
+          (template) => template.id === formData.template1
+        );
+        const template2 = templates.find(
+          (template) => template.id === formData.template2
         );
 
-        if (!selectedTemplate) return;
+        // Combinar los textos de ambos templates si están seleccionados
+        let combinedBlocks = [];
 
-        setSelectedTemplate(selectedTemplate);
+        const dividerBlock = {
+          type: 'paragraph',
+          data: {
+            text: '------------------------------------------------------',
+          },
+        };
+
+        if (template1 && template2) {
+          // Deserializa los textos de ambos templates
+          const blocks1 = JSON.parse(template1.text || '{"blocks":[]}').blocks;
+          const blocks2 = JSON.parse(template2.text || '{"blocks":[]}').blocks;
+
+          // Combina los bloques de ambos templates y el espaciado
+          combinedBlocks = blocks1.concat(dividerBlock, blocks2);
+        } else if (template1) {
+          // Solo template1 está seleccionado
+          combinedBlocks = JSON.parse(template1.text || '{"blocks":[]}').blocks;
+        } else if (template2) {
+          // Solo template2 está seleccionado
+          combinedBlocks = JSON.parse(template2.text || '{"blocks":[]}').blocks;
+        }
+
+        const combinedText = JSON.stringify({
+          time: Date.now(),
+          blocks: combinedBlocks,
+          version: '2.29.0',
+        });
 
         const EditorJS = require('@editorjs/editorjs').default;
-        if (
-          editorRef.current &&
-          typeof editorRef.current.destroy === 'function'
-        ) {
+        if (editorRef.current) {
           editorRef.current.destroy();
-          editorRef.current = null;
         }
+
+        setContent(combinedText);
 
         editorRef.current = new EditorJS({
           holder: 'editorjs',
           readOnly: true,
-          data: JSON.parse(selectedTemplate.text || '{}'),
+          data: JSON.parse(combinedText || '{}'),
           tools: {
             simpleImage: SimpleImage,
             embed: Embed,
@@ -93,36 +131,32 @@ export default function Page() {
           },
         });
 
-        //Extraer los placeholders del texto
-        // Ensure selectedTemplate.text is a string, using '' as fallback if it's undefined.
-        const placeholders: string[] = extractPlaceholders(
-          selectedTemplate.text || ''
+        // Se combinan los placeholders de ambos templates
+        const placeholders1: string[] = extractPlaceholders(
+          template1?.text ?? ''
+        ) as string[];
+        const placeholders2: string[] = extractPlaceholders(
+          template2?.text ?? ''
         ) as string[];
 
-        //Asignarlos al state
-        const initialValues = placeholders.reduce<Record<string, string>>(
-          (acc, placeholder) => {
-            acc[placeholder] = '';
-            return acc;
-          },
-          {}
+        const combinedPlaceholders: string[] = Array.from(
+          new Set([...placeholders1, ...placeholders2])
         );
+
+        // Se actualizan los valores de los placeholders
+        const initialValues = combinedPlaceholders.reduce<
+          Record<string, string>
+        >((acc, placeholder) => {
+          acc[placeholder] = '';
+          return acc;
+        }, {});
 
         setPlaceholderValues(initialValues);
       }
     };
 
     loadEditorData();
-
-    return () => {
-      if (
-        editorRef.current &&
-        typeof editorRef.current.destroy === 'function'
-      ) {
-        editorRef.current.destroy();
-      }
-    };
-  }, [formData.template1, templates]);
+  }, [formData.template1, formData.template2, templates.length]);
 
   /**
    * Actualiza el estado del formulario cuando los campos cambian.
@@ -133,7 +167,26 @@ export default function Page() {
   ) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Manejar específicamente el cambio en el uso de múltiples templates
+    // Si el cambio es en la selección de uso de múltiples templates
+    if (name === 'useMultipleTemplates') {
+      const useMultiple = value === 'true';
+
+      // Restablecer completamente el formulario si se cambia el modo
+      setFormData({
+        name: formData.name,
+        template1: '',
+        template2: '',
+        useMultipleTemplates: useMultiple,
+      });
+
+      if (editorRef.current) {
+        editorRef.current.clear();
+      }
+      setPlaceholderValues({});
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   /**
@@ -143,14 +196,27 @@ export default function Page() {
    * @param {string} templateText - El texto de la plantilla del cual extraer los marcadores.
    * @returns {Array} Una lista de todos los marcadores de posición únicos encontrados en la plantilla.
    */
-  const extractPlaceholders = (templateText: string) => {
-    const regex = /{{(.*?)}}/g;
-    let match;
+  // const extractPlaceholders = (templateText: string) => {
+  //   const regex = /{{(.*?)}}/g;
+  //   let match;
+  //   const placeholders = new Set();
+
+  //   while ((match = regex.exec(templateText)) !== null) {
+  //     placeholders.add(match[1].trim());
+  //   }
+
+  //   return Array.from(placeholders);
+  // };
+  const extractPlaceholders = (jsonText: string) => {
+    const { blocks } = JSON.parse(jsonText || '{"blocks":[]}');
     const placeholders = new Set();
 
-    while ((match = regex.exec(templateText)) !== null) {
-      placeholders.add(match[1].trim());
-    }
+    blocks.forEach((block: any) => {
+      const matches = block.data.text.match(/{{(.*?)}}/g) || [];
+      matches.forEach((match: any) =>
+        placeholders.add(match.slice(2, -2).trim())
+      );
+    });
 
     return Array.from(placeholders);
   };
@@ -179,18 +245,13 @@ export default function Page() {
    */
   const substitutePlaceholders = (
     templateText: string,
-    values: Record<string, string>
+    placeholderValues: Record<string, string>
   ) => {
-    let substitutedText = templateText;
-
-    Object.entries(values).forEach(([key, value]) => {
-      substitutedText = substitutedText.replace(
-        new RegExp(`{{${key}}}`, 'g'),
-        value
-      );
+    let content = templateText;
+    Object.entries(placeholderValues).forEach(([placeholder, value]) => {
+      content = content.replace(new RegExp(`{{${placeholder}}}`, 'g'), value);
     });
-
-    return substitutedText;
+    return content;
   };
 
   // Verifica si el formulario es válido antes de permitir el envío.
@@ -203,34 +264,63 @@ export default function Page() {
    * Maneja el envío del formulario para crear una nueva cuenta.
    * @param {React.FormEvent} e - Evento de envío del formulario.
    */
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     if (!isFormValid) {
       notifyError('El formulario no es válido.');
       return;
     }
-    if (!formData.template1) {
-      notifyError('El texto de los templates no esta disponible.');
-      return;
-    }
 
+    // Sustituir los placeholders en el contenido combinado almacenado en el estado
+    const finalContent = substitutePlaceholders(
+      JSON.stringify(content),
+      placeholderValues
+    );
+
+    // Preparar los datos básicos del documento
     let documentData = {
       name: formData.name,
-      templates: [formData.template1, formData.template2].filter(
-        (templateId) => templateId && templateId !== ''
-      ),
-      content: substitutePlaceholders(
-        selectedTemplate && selectedTemplate.text ? selectedTemplate.text : '',
-        placeholderValues
-      ),
+      templates: [formData.template1, formData.template2].filter(Boolean), // Filtra los IDs de template no vacíos
+      content: finalContent,
       id: '',
     };
 
     const documentManager = new DocumentManager();
 
     try {
-      documentManager.createDocument(documentData);
+      if (formData.useMultipleTemplates) {
+        // Obtiene los objetos ITemplate basados en los IDs seleccionados
+        const selectedTemplates = [formData.template1, formData.template2]
+          .map((templateId) => {
+            const templateProps = templateManager.getTemplateById(templateId);
+            if (templateProps) {
+              //Esto es porque como no tenemos una DB necesitamos reinstancear los objetos.
+              return templateManager.convertPropsToTemplate(templateProps);
+            }
+            return undefined;
+          })
+          .filter(Boolean) as ITemplate[];
+
+        // Verifica si ambos templates están seleccionados antes de llamar a createCompositeDocument
+        if (selectedTemplates.length === 2) {
+          documentManager.createCompositeDocument(
+            documentData,
+            selectedTemplates
+          );
+        } else {
+          notifyError(
+            'Debes seleccionar dos templates para crear un documento compuesto.'
+          );
+          return;
+        }
+      } else {
+        // Si solo se seleccionó un template (o ninguno), utilizar el método para crear un documento simple
+        // Aquí podrías decidir si manejar el caso de 'ningún template seleccionado' de una manera especial
+        documentManager.createDocument(documentData);
+      }
+
+      // Redireccionar al usuario a la lista de documentos o a la página de éxito
       router.push('/documentos');
     } catch (error) {
       notifyError(`Error al crear el documento: ${error}`);
@@ -256,6 +346,29 @@ export default function Page() {
                 required
               />
             </div>
+            <div className={styles.formControlLong}>
+              <p>
+                <strong>
+                  ¿Desea crear un documento con múltiples templates?
+                </strong>
+              </p>
+              <RadioButton
+                id="useMultipleTemplates-yes"
+                name="useMultipleTemplates"
+                label="Sí"
+                value="true"
+                checked={formData.useMultipleTemplates === true}
+                onChange={handleChange}
+              />
+              <RadioButton
+                id="useMultipleTemplates-no"
+                name="useMultipleTemplates"
+                label="No"
+                value="false"
+                checked={formData.useMultipleTemplates === false}
+                onChange={handleChange}
+              />
+            </div>
             <div className={styles.formControl}>
               <Select
                 id="template1"
@@ -271,6 +384,24 @@ export default function Page() {
                 defaultOptionMessage="Seleccione un template"
               />
             </div>
+            {formData.useMultipleTemplates && (
+              <div className={styles.formControl}>
+                <Select
+                  id="template2"
+                  name="template2"
+                  label="Segundo Template"
+                  items={templates.map((template) => ({
+                    id: template.id || 'default-id',
+                    name: template.name || 'Default Name',
+                  }))}
+                  value={formData.template2 ? formData.template2 : ''}
+                  onChange={handleChange}
+                  required
+                  disabled={!formData.template1}
+                  defaultOptionMessage="Seleccione el segundo template"
+                />
+              </div>
+            )}
             {formData.template1 && (
               <div className={styles.formControlLong}>
                 <p className={styles.editorLabel}>Texto:</p>

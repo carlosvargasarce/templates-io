@@ -91,8 +91,6 @@ export default function Page() {
     },
     {
       name: 'Preview',
-      selector: (row) => row.id,
-      sortable: true,
     },
   ];
 

@@ -1,4 +1,5 @@
 import { DocumentProps } from '@/types/document';
+import { ITemplate } from '../models/ITemplate';
 
 /**
  * Clase IDocument
@@ -7,7 +8,7 @@ import { DocumentProps } from '@/types/document';
 abstract class IDocument {
   private id: string;
   private name: string;
-  private templates: string[];
+  private templates: ITemplate[] | string[];
   private content: string;
 
   /**
@@ -34,11 +35,11 @@ abstract class IDocument {
     this.name = value;
   }
 
-  get Templates(): string[] {
+  get Templates(): ITemplate[] | string[] {
     return this.templates;
   }
 
-  set Templates(value: string[]) {
+  set Templates(value: ITemplate[]) {
     this.templates = value;
   }
 
