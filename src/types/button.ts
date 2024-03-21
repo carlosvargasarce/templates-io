@@ -2,7 +2,7 @@ export type bgColor = 'primaryColor' | 'grayColor' | 'danger' | 'whiteColor';
 export type buttonType = 'button' | 'submit' | 'reset';
 
 export interface ButtonProps {
-  label: string;
+  label: string | React.ReactNode;
   bgColor?: bgColor;
   style?: React.CSSProperties;
   isLoading?: boolean;

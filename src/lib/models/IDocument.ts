@@ -1,4 +1,4 @@
-import { DocumentProps } from '@/types/document';
+import { MyDocumentProps } from '@/types/document';
 import { ITemplate } from '../models/ITemplate';
 
 /**
@@ -13,9 +13,9 @@ abstract class IDocument {
 
   /**
    * Constructor de la clase IDocument.
-   * @param {DocumentProps} props - Propiedades para inicializar un documento.
+   * @param {MyDocumentProps} props - Propiedades para inicializar un documento.
    */
-  constructor({ id, name, templates, content }: DocumentProps) {
+  constructor({ id, name, templates, content }: MyDocumentProps) {
     this.id = id;
     this.name = name;
     this.templates = templates;
