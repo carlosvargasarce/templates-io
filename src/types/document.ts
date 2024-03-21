@@ -1,6 +1,6 @@
 import { ITemplate } from '../lib/models/ITemplate';
 
-export interface DocumentProps {
+export interface MyDocumentProps {
   id: string;
   name: string;
   templates: ITemplate[] | string[];
