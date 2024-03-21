@@ -1,4 +1,4 @@
-import { DocumentProps } from '@/types/document';
+import { MyDocumentProps } from '@/types/document';
 import { v4 as uuidv4 } from 'uuid';
 import { Document } from '../documents/DefaultDocument';
 import { ITemplate } from '../models/ITemplate';
@@ -22,9 +22,9 @@ class DocumentManager {
   /**
    * Crea y almacena un nuevo documento utilizando los datos proporcionados.
    *
-   * @param {DocumentProps} documentData - Los datos del nuevo documento.
+   * @param {MyDocumentProps} documentData - Los datos del nuevo documento.
    */
-  public createDocument(documentData: DocumentProps) {
+  public createDocument(documentData: MyDocumentProps) {
     const id = uuidv4();
     const completeTemplateData = { ...documentData, id };
     const newDocument = new Document(completeTemplateData);
@@ -39,7 +39,7 @@ class DocumentManager {
    * @param templates Lista de templates para combinar en el documento.
    */
   public createCompositeDocument(
-    documentData: DocumentProps,
+    documentData: MyDocumentProps,
     templates: ITemplate[]
   ) {
     // Crea un CompositeTemplate y agrega todos los templates proporcionados
@@ -63,18 +63,18 @@ class DocumentManager {
    * Obtiene un documento por su identificador.
    *
    * @param {string} id - El identificador del documento a obtener.
-   * @returns {DocumentProps} Los datos del documento solicitado.
+   * @returns {MyDocumentProps} Los datos del documento solicitado.
    */
-  public getDocumentById(id: string): DocumentProps {
+  public getDocumentById(id: string): MyDocumentProps {
     return this.storageService.getDocumentById(id);
   }
 
   /**
    * Obtiene todos los documentos almacenados.
    *
-   * @returns {DocumentProps[]} Un arreglo con todos los documentos.
+   * @returns {MyDocumentProps[]} Un arreglo con todos los documentos.
    */
-  public getAllDocuments(): DocumentProps[] {
+  public getAllDocuments(): MyDocumentProps[] {
     return this.storageService.getDocuments();
   }
 
