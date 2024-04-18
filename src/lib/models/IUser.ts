@@ -11,18 +11,28 @@ abstract class IUser {
   private email: string;
   private password: string;
   private isEnabled: boolean;
+  private interests?: string[];
 
   /**
    * Constructor de la clase IUser.
    * @param {UserProps} props - Propiedades para inicializar un usuario.
    */
-  constructor({ id, name, email, password, role, isEnabled }: UserProps) {
+  constructor({
+    id,
+    name,
+    email,
+    password,
+    role,
+    isEnabled,
+    interests,
+  }: UserProps) {
     this.id = id;
     this.name = name;
     this.email = email;
     this.password = password;
     this.role = role;
     this.isEnabled = isEnabled;
+    this.interests = interests;
   }
 
   // Getters y Setters
@@ -68,6 +78,14 @@ abstract class IUser {
 
   set IsEnabled(value: boolean) {
     this.isEnabled = value;
+  }
+
+  get Interests(): string[] | undefined {
+    return this.interests;
+  }
+
+  set Interests(value: string[]) {
+    this.interests = value;
   }
 
   //Métodos abstractos

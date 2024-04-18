@@ -111,7 +111,6 @@ export default function Page() {
   const handlePreviewClick = (row: any) => {
     setSelectedDocument(row);
     setIsModalOpen(true);
-    console.log('row', row);
   };
 
   /**

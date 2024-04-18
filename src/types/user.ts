@@ -7,4 +7,5 @@ export interface UserProps {
   password: string;
   role: Role | string;
   isEnabled: boolean;
+  interests?: string[];
 }
