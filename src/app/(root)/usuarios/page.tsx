@@ -49,6 +49,12 @@ export default function Page() {
       sortable: true,
     },
     {
+      name: 'Intereses',
+      selector: (row: UserProps) =>
+        row.interests ? row.interests.join(', ') : '',
+      sortable: true,
+    },
+    {
       name: 'Habilitar',
       selector: (row) => row.isEnabled,
       cell: (row) => (

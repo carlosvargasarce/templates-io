@@ -4,6 +4,7 @@ import Button from '@/components/Button/Button';
 import Switch from '@/components/Switch/Switch';
 import Title from '@/components/Title/Title';
 import { customStyles } from '@/constants/tableStylesOverrides';
+import useObserverManager from '@/hooks/useObserverManager';
 import useToast from '@/hooks/useToast';
 import TemplateManager from '@/lib/manager/TemplateManager';
 import UserManager from '@/lib/manager/UserManager';
@@ -31,6 +32,8 @@ export default function Page() {
   const isModerator = activeUser && activeUser.role === 'Moderador';
   const [columns, setColumns] = useState<TableColumn<TemplateProps>[]>([]);
   const [showButton, setShowButton] = useState(false);
+
+  useObserverManager(notifySuccess);
 
   useEffect(() => {
     const shouldShowButton = canCreateTemplate || selectedRows.length > 0;

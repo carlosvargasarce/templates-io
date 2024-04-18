@@ -6,6 +6,7 @@ import Select from '@/components/Select/Select';
 import Title from '@/components/Title/Title';
 import useToast from '@/hooks/useToast';
 import TemplateManager from '@/lib/manager/TemplateManager';
+import TemplateSubject from '@/lib/observers/TemplateSubject';
 import EditorJs from '@editorjs/editorjs';
 import Embed from '@editorjs/embed';
 import Header from '@editorjs/header';
@@ -27,6 +28,7 @@ export default function Page() {
   const editorRef = useRef<EditorJs | null>(null);
   const router = useRouter();
   const { notifyError } = useToast();
+  const templateSubject = TemplateSubject.getInstance();
 
   const categories = [
     { id: 'Privado', name: 'Privado' },
@@ -124,6 +126,10 @@ export default function Page() {
 
     try {
       templateManager.createTemplate(templateData);
+      // Notify observers if the template is public
+      if (templateData.category === 'Público') {
+        templateSubject.notifyObservers(templateData);
+      }
       router.push('/templates');
     } catch (error) {
       notifyError(`Error al crear template: ${error}`);
