@@ -1,8 +1,6 @@
 import { TemplateProps } from '@/types/template';
-
-export interface Observer {
-  notify(template: TemplateProps): void;
-}
+import { Observer } from './IObserver';
+import Subject from './ITemplateSubject';
 
 export interface UserObserverInterface extends Observer {
   interests: string[];
@@ -12,7 +10,7 @@ function isUserObserver(observer: Observer): observer is UserObserverInterface {
   return (observer as UserObserverInterface).interests !== undefined;
 }
 
-export default class TemplateSubject {
+export default class TemplateSubject implements Subject {
   private static instance: TemplateSubject;
   private observers: Observer[] = [];
 
