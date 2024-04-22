@@ -1,9 +1,5 @@
 import { TemplateProps } from '@/types/template';
-
-// Observer interface
-interface Observer {
-  notify(template: TemplateProps): void;
-}
+import { Observer } from './IObserver';
 
 export interface UserObserverInterface extends Observer {
   interests: string[];
