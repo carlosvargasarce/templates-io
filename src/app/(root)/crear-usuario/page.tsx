@@ -30,6 +30,7 @@ export default function Page() {
     passwordConfirmation: '',
     question1: '1',
     question2: '1',
+    interests: '',
   });
 
   /**
@@ -52,6 +53,7 @@ export default function Page() {
     formData.name &&
     formData.email &&
     formData.password &&
+    formData.interests &&
     formData.password === formData.passwordConfirmation;
 
   /**
@@ -78,6 +80,9 @@ export default function Page() {
       id: '',
       role: '',
       isEnabled: true,
+      interests: formData.interests
+        .split(',')
+        .map((interest) => interest.trim()),
     };
 
     const userManager = new UserManager();
@@ -191,6 +196,17 @@ export default function Page() {
               />
             </div>
           )}
+        </div>
+        <div className={styles.formControlLong}>
+          <InputField
+            id="interests"
+            label="Intereses"
+            name="interests"
+            type="text"
+            value={formData.interests}
+            onChange={handleChange}
+            required
+          />
         </div>
         <div className={styles.formControlLong}>
           <Link href="/usuarios">

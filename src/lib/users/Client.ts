@@ -2,8 +2,16 @@ import { UserProps } from '@/types/user';
 import { IUser } from '../models/IUser';
 
 class Client extends IUser {
-  constructor({ id, name, email, password }: UserProps) {
-    super({ id, name, email, password, role: 'Cliente', isEnabled: true });
+  constructor({ id, name, email, password, interests }: UserProps) {
+    super({
+      id,
+      name,
+      email,
+      password,
+      role: 'Cliente',
+      isEnabled: true,
+      interests,
+    });
   }
 
   habilitar(): void {

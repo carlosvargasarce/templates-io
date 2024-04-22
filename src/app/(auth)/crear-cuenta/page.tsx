@@ -31,6 +31,7 @@ export default function Page() {
     passwordConfirmation: '',
     question1: '1',
     question2: '1',
+    interests: '',
   });
 
   /**
@@ -51,7 +52,11 @@ export default function Page() {
   // Verifica si el formulario es válido antes de permitir el envío.
   const passwordsMatch = formData.password === formData.passwordConfirmation;
   const isFormValid =
-    formData.name && formData.email && formData.password && passwordsMatch;
+    formData.name &&
+    formData.email &&
+    formData.password &&
+    passwordsMatch &&
+    formData.interests;
 
   /**
    * Maneja el envío del formulario para crear una nueva cuenta.
@@ -81,6 +86,9 @@ export default function Page() {
       id: '',
       role: '',
       isEnabled: true,
+      interests: formData.interests
+        .split(',')
+        .map((interest) => interest.trim()),
     };
 
     const userManager = new UserManager();
@@ -188,6 +196,17 @@ export default function Page() {
               onChange={handleChange}
             />
           </div>
+        )}
+        {formData.question1 === '1' && (
+          <InputField
+            id="interests"
+            label="Intereses"
+            name="interests"
+            type="text"
+            value={formData.interests}
+            onChange={handleChange}
+            required
+          />
         )}
         <Button
           label="Crear Cuenta"
